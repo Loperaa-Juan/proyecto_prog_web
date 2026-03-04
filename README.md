@@ -1,6 +1,6 @@
 # ⚙️ **COMPLEXITYLAB**
 
-ComplexityLab es una plataforma web que permite a los usuarios explorar y analizar la complejidad de diferentes algoritmos. Cuenta con un core impulsado por IA que permite a los usuarios explorar y analizar la complejidad de diferentes problemas de programación, así como sugerir soluciones y optimizaciones. Nos basamos enm el pensamiento socrático para guiar a los usuarios en el proceso de aprendizaje, sin caer en la trampa de dar la solución directamente.
+ComplexityLab es una plataforma web que permite a los usuarios explorar y analizar la complejidad de diferentes algoritmos. Cuenta con un core impulsado por IA que permite a los usuarios explorar y analizar la complejidad de diferentes problemas de programación, así como sugerir soluciones y optimizaciones.
 
 ---
 
