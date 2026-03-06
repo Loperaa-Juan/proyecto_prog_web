@@ -1,8 +1,22 @@
-# ⚙️ **COMPLEXITYLAB**
+<div align="center">
 
-ComplexityLab es una plataforma web que permite a los usuarios explorar y analizar la complejidad de diferentes algoritmos. Cuenta con un core impulsado por IA que permite a los usuarios explorar y analizar la complejidad de diferentes problemas de programación, así como sugerir soluciones y optimizaciones.
+# ⚙️ ComplexityLab
+
+**Plataforma educativa impulsada por IA para explorar y analizar la complejidad algorítmica.**
+
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 
 ---
+
+
+</div>
+
+<br/>
+
 
 ## 📋 TABLA DE CONTENIDO
 
@@ -10,6 +24,15 @@ ComplexityLab es una plataforma web que permite a los usuarios explorar y analiz
 - [Stack Tecnológico](#stack-tecnológico)
 - [Diagramas del cliente](#diagramas-del-cliente)
 - [Flujos HTTP](#flujos-http)
+  - [Flujo de registro](#1-flujo-de-registro)
+  - [Flujo de inicio de sesión (Authentication)](#2-flujo-de-inicio-de-sesión-authentication)
+  - [Flujo de creación de un challenge](#3-flujo-de-creación-de-un-challenge)
+    - [Flujo de edición de un challenge](#31-flujo-de-edición-de-un-challenge)
+    - [Flujo de eliminación de un challenge](#32-flujo-de-eliminación-de-un-challenge)
+    - [Flujo de listado de challenges](#33-flujo-de-listado-de-challenges)
+    - [Flujo de solución de solución de un challenge](#34-flujo-de-solución-de-un-challenge)
+  - [Flujo del optimizador (chatbot)](#4-flujo-del-optimizador-de-código-chatbot)
+  - [Flujo del dashboard](#5-flujo-del-dashboard)
 - [Capa del servidor](#capa-del-servidor)
 - [Capa de persistencia (Base de Datos)](#capa-de-persistencia)
 - [Desarrolladores](#desarrolladores)
