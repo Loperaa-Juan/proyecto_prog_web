@@ -65,7 +65,53 @@ El objetivo principal de nuestra aplicación es sembrar en el usuario un pensami
 ---
 
 ## **DIAGRAMAS DEL CLIENTE**
+<code>mermaid</code>
+    graph TD
+        subgraph Frontend ["CLIENTE / FRONTEND"]
+            LP[Landing Page]
+            REG[Registro]
+            LOG[Login]
+            DASH[Dashboard]
+            OPT[Optimizer]
+        end
 
+        subgraph Backend ["API / BACKEND"]
+            AR[API Rest]
+            AC[AUTH Controller]
+            UC[USER Controller]
+            CC[Challenge Controller]
+        end
+
+        subgraph Datos ["DATOS"]
+            DB_U[(Users)]
+            DB_C[(Challenges)]
+            DB_S[(Sessions)]
+        end
+
+        subgraph LLM_Layer ["LLM"]
+            CB[Chatbot]
+        end
+
+        %% Conexiones Frontend -> Backend
+        LP -- "GET /" --> AR
+        REG -- "POST /register" --> AC
+        LOG -- "POST /login" --> AC
+        DASH -- "GET /user/stats" --> UC
+
+        %% Flujo interno Backend
+        AR --> AC
+        AC --> UC
+        UC --> CC
+
+        %% Conexiones Backend -> Datos
+        AC -- "INSERT/UPDATE" --> DB_S
+        UC -- "SELECT/UPDATE" --> DB_U
+        CC -- "SELECT/INSERT" --> DB_C
+
+        %% Conexiones LLM
+        OPT -- "POST /optimize" --> CB
+        CB -- "OPTIMIZED" --> DASH
+<code></code>
 ---
 
 ## **FLUJOS HTTP**
