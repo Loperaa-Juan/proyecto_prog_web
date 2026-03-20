@@ -335,6 +335,92 @@ El dashboard es una sección de la plataforma donde el usuario puede ver sus est
 
 ## **CAPA DEL SERVIDOR**
 
+La capa de servidor del proyecto está desarrollada utilizando **FastAPI**, un framework moderno de Python diseñado para construir APIs web rápidas, seguras y eficientes. Esta capa es responsable de gestionar la comunicación entre el cliente (frontend) y la capa de persistencia (base de datos).
+
+Dentro de la arquitectura del sistema, el servidor recibe las solicitudes HTTP enviadas por el cliente, procesa la lógica del sistema y realiza las operaciones necesarias sobre los datos antes de devolver una respuesta estructurada en formato JSON.
+
+### Funciones principales del servidor
+
+La capa de servidor cumple las siguientes responsabilidades dentro del sistema:
+
+* Recibir peticiones HTTP desde el cliente (GET, POST, PUT, DELETE).
+* Validar los datos enviados por los usuarios.
+* Ejecutar la lógica de negocio de la aplicación.
+* Comunicarse con la capa de persistencia para almacenar o consultar datos.
+* Devolver respuestas estructuradas al cliente.
+
+### Arquitectura del Backend con FastAPI
+
+El backend del proyecto sigue una arquitectura modular que permite organizar el código de forma clara y escalable. La estructura general del servidor se divide en los siguientes componentes:
+
+```
+backend/
+│
+├── main.py
+├── routers/
+├── models/
+├── schemas/
+└── services/
+```
+
+#### main.py
+
+Es el punto de entrada de la aplicación. En este archivo se inicializa el servidor FastAPI y se registran las rutas principales de la API.
+
+#### routers
+
+Contiene los endpoints del sistema. Cada router define las rutas que el cliente puede utilizar para interactuar con el sistema.
+
+Ejemplo de endpoints del sistema:
+
+```
+GET /snippets
+POST /snippets
+GET /snippets/{id}
+DELETE /snippets/{id}
+```
+
+#### models
+
+Los modelos representan las entidades principales del sistema y definen la estructura de los datos que se almacenan en la base de datos.
+
+#### schemas
+
+Los schemas se utilizan para validar la información que llega desde el cliente y asegurar que los datos tengan el formato correcto antes de ser procesados.
+
+#### services
+
+En esta capa se implementa la lógica de negocio del sistema, separando el procesamiento de datos de las rutas del servidor.
+
+### Flujo de comunicación del sistema
+
+El funcionamiento del sistema sigue el modelo cliente-servidor, donde el cliente envía una solicitud al servidor y este procesa la información antes de devolver una respuesta.
+
+```
+Usuario
+   │
+   ▼
+Frontend (Cliente)
+   │
+   │ HTTP Request
+   ▼
+Servidor FastAPI
+   │
+   ▼
+Lógica del Sistema
+   │
+   ▼
+Capa de Persistencia (Base de Datos)
+   │
+   ▼
+Respuesta JSON
+   │
+   ▼
+Frontend
+```
+
+De esta forma, la capa de servidor actúa como intermediario entre el cliente y la base de datos, garantizando que las operaciones del sistema se realicen de manera organizada, segura y eficiente.
+
 
 ---
 
