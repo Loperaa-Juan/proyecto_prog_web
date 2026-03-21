@@ -126,22 +126,12 @@ img {
   gap: 0.625rem;
 }
 
-.navbar__logo-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--primary-500), var(--accent-500));
-}
-
 .navbar__logo-text {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--zinc-800);
-  transition: color 0.3s;
+  transition: all 0.3s;
 }
 
 .dark .navbar__logo-text {
@@ -149,7 +139,11 @@ img {
 }
 
 .navbar__logo-text span {
-  color: var(--primary-500);
+  -webkit-text-stroke: 0;
+  background: linear-gradient(135deg, #06b6d4, #2563eb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .navbar__links {
