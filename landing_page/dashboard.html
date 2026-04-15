@@ -1,378 +1,717 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es" class="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="ComplexityLab — Tu dashboard personal. Revisa tu progreso, estadísticas y challenges completados." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="dashboard.css" />
-  <title>Dashboard — ComplexityLab</title>
-</head>
-<body>
-
-  <!-- ========== NAVBAR ========== -->
-  <nav class="navbar">
-    <div class="navbar__inner">
-      <a href="index.html" class="navbar__logo">
-        <div class="navbar__logo-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="16 18 22 12 16 6" />
-            <polyline points="8 6 2 12 8 18" />
-          </svg>
-        </div>
-        <div class="navbar__logo-text">Complexity<span>Lab</span></div>
-      </a>
-      <ul class="navbar__links">
-        <li><a href="index.html">Inicio</a></li>
-        <li><a href="challenges.html">Desafíos</a></li>
-        <li><a href="#ranking">Ranking</a></li>
-        <li><a href="dashboard.html" class="navbar__link--active">Dashboard</a></li>
-      </ul>
-      <div class="navbar__actions">
-        <button class="btn-theme-toggle" id="themeToggle" aria-label="Cambiar tema">
-          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-          </svg>
-          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
-        </button>
-        <button class="btn-cta-nav" onclick="window.location.href='challenges.html'">Nuevos Desafíos</button>
-        <button class="navbar__hamburger" id="hamburgerBtn" aria-label="Abrir menú">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
-          </svg>
-        </button>
-      </div>
-    </div>
-    <div class="navbar__mobile-menu" id="mobileMenu">
-      <ul>
-        <li><a href="index.html">Inicio</a></li>
-        <li><a href="challenges.html">Desafíos</a></li>
-        <li><a href="#ranking">Ranking</a></li>
-        <li><a href="dashboard.html">Dashboard</a></li>
-      </ul>
-    </div>
-  </nav>
-
-  <!-- ========== MAIN CONTENT ========== -->
-  <main class="dashboard">
-
-    <!-- Profile header -->
-    <section class="dash-hero">
-      <div class="dash-hero__bg">
-        <div class="dash-hero__blob-1"></div>
-        <div class="dash-hero__blob-2"></div>
-        <div class="dash-hero__grid"></div>
-      </div>
-      <div class="dash-hero__inner">
-        <div class="dash-profile">
-          <div class="dash-avatar">
-            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="40" cy="30" r="18" fill="rgba(255,255,255,0.4)"/>
-              <ellipse cx="40" cy="72" rx="28" ry="18" fill="rgba(255,255,255,0.3)"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="ComplexityLab — Tu dashboard personal. Revisa tu progreso, estadísticas y challenges completados."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="dashboard.css" />
+    <title>Dashboard — ComplexityLab</title>
+  </head>
+  <body>
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar">
+      <div class="navbar__inner">
+        <a href="#" class="navbar__logo">
+          <img
+            src="logo.svg"
+            alt="ComplexityLab Logo"
+            width="38"
+            height="38"
+            class="navbar__logo-icon"
+          />
+          <div class="navbar__logo-text">Complexity<span>Lab</span></div>
+        </a>
+        <ul class="navbar__links">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="challenges.html">Desafíos</a></li>
+          <li>
+            <a href="dashboard.html" class="navbar__link--active">Dashboard</a>
+          </li>
+        </ul>
+        <div class="navbar__actions">
+          <button
+            class="btn-theme-toggle"
+            id="themeToggle"
+            aria-label="Cambiar tema"
+          >
+            <svg
+              class="icon-sun"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
             </svg>
-          </div>
-          <div class="dash-profile__info">
-            <div class="dash-profile__badge">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              Nivel Avanzado
-            </div>
-            <h1 class="dash-profile__name">Juan David Berrio</h1>
-            <p class="dash-profile__username">@devido527 · Miembro desde enero 2026</p>
-          </div>
-          <div class="dash-profile__actions">
-            <a href="challenge-form.html" class="btn-primary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Crear Challenge
-            </a>
-          </div>
-        </div>
-
-        <!-- Stats row -->
-        <div class="dash-stats">
-          <div class="dash-stat-card">
-            <div class="dash-stat-card__icon dash-stat-card__icon--blue">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            </div>
-            <div class="dash-stat-card__value">2</div>
-            <div class="dash-stat-card__label">Challenges Creados</div>
-          </div>
-          <div class="dash-stat-card">
-            <div class="dash-stat-card__icon dash-stat-card__icon--green">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-            <div class="dash-stat-card__value">5</div>
-            <div class="dash-stat-card__label">Resueltos</div>
-          </div>
-          <div class="dash-stat-card">
-            <div class="dash-stat-card__icon dash-stat-card__icon--orange">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            </div>
-            <div class="dash-stat-card__value">5</div>
-            <div class="dash-stat-card__label">Racha Actual</div>
-          </div>
-          <div class="dash-stat-card">
-            <div class="dash-stat-card__icon dash-stat-card__icon--purple">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </div>
-            <div class="dash-stat-card__value">4</div>
-            <div class="dash-stat-card__label">Interacciones</div>
-          </div>
-          <div class="dash-stat-card">
-            <div class="dash-stat-card__icon dash-stat-card__icon--red">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            </div>
-            <div class="dash-stat-card__value">0</div>
-            <div class="dash-stat-card__label">Issues Abiertos</div>
-          </div>
+            <svg
+              class="icon-moon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+          <button
+            class="btn-cta-nav"
+            onclick="window.location.href = 'challenges.html'"
+          >
+            Nuevos Desafíos
+          </button>
+          <button
+            class="navbar__hamburger"
+            id="hamburgerBtn"
+            aria-label="Abrir menú"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
         </div>
       </div>
-    </section>
+      <div class="navbar__mobile-menu" id="mobileMenu">
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="challenges.html">Desafíos</a></li>
+          <li><a href="#ranking">Ranking</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+        </ul>
+      </div>
+    </nav>
 
-    <!-- ========== DASHBOARD BODY ========== -->
-    <div class="dash-body">
-      <div class="dash-body__inner">
-
-        <!-- Left column -->
-        <div class="dash-col-main">
-
-          <!-- My Challenges -->
-          <section class="dash-section">
-            <div class="dash-section__header">
-              <h2 class="dash-section__title">Mis Challenges</h2>
-              <a href="challenge-form.html" class="dash-section__link">
-                + Crear nuevo
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="dashboard">
+      <!-- Profile header -->
+      <section class="dash-hero">
+        <div class="dash-hero__bg">
+          <div class="dash-hero__blob-1"></div>
+          <div class="dash-hero__blob-2"></div>
+          <div class="dash-hero__grid"></div>
+        </div>
+        <div class="dash-hero__inner">
+          <div class="dash-profile">
+            <div class="dash-avatar">
+              <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="30" r="18" fill="rgba(255,255,255,0.4)" />
+                <ellipse
+                  cx="40"
+                  cy="72"
+                  rx="28"
+                  ry="18"
+                  fill="rgba(255,255,255,0.3)"
+                />
+              </svg>
+            </div>
+            <div class="dash-profile__info">
+              <div class="dash-profile__badge">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                  />
+                </svg>
+                Nivel Avanzado
+              </div>
+              <h1 class="dash-profile__name">Juan David Berrio</h1>
+              <p class="dash-profile__username">
+                @devido527 · Miembro desde enero 2026
+              </p>
+            </div>
+            <div class="dash-profile__actions">
+              <a href="challenge-form.html" class="btn-primary">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Crear Challenge
               </a>
             </div>
+          </div>
 
-            <!-- Estado: Con datos -->
-            <div class="dash-challenges-list" id="myChallengesList">
-              <article class="dash-challenge-item">
-                <div class="dash-challenge-item__left">
-                  <span class="badge badge--easy">Fácil</span>
-                  <div>
-                    <h3 class="dash-challenge-item__title">Two Sum</h3>
-                    <p class="dash-challenge-item__meta">Arrays · 234 soluciones · 87% tasa de éxito</p>
-                  </div>
-                </div>
-                <div class="dash-challenge-item__actions">
-                  <a href="challenge-form.html?mode=edit&id=1" class="dash-action-btn" title="Editar">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                  </a>
-                  <button class="dash-action-btn dash-action-btn--danger" title="Eliminar" onclick="confirmDelete(this, 'Two Sum')">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                  </button>
-                </div>
-              </article>
-
-              <article class="dash-challenge-item">
-                <div class="dash-challenge-item__left">
-                  <span class="badge badge--medium">Medio</span>
-                  <div>
-                    <h3 class="dash-challenge-item__title">Merge Intervals</h3>
-                    <p class="dash-challenge-item__meta">Ordenamiento · 156 soluciones · 62% tasa de éxito</p>
-                  </div>
-                </div>
-                <div class="dash-challenge-item__actions">
-                  <a href="challenge-form.html?mode=edit&id=2" class="dash-action-btn" title="Editar">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                  </a>
-                  <button class="dash-action-btn dash-action-btn--danger" title="Eliminar" onclick="confirmDelete(this, 'Merge Intervals')">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                  </button>
-                </div>
-              </article>
-            </div>
-
-            <!-- Estado: Vacío (oculto por defecto, se muestra con JS) -->
-            <div class="dash-empty-state" id="emptyChallenges" style="display:none;">
-              <div class="dash-empty-state__icon">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <!-- Stats row -->
+          <div class="dash-stats">
+            <div class="dash-stat-card">
+              <div class="dash-stat-card__icon dash-stat-card__icon--blue">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="16 18 22 12 16 6" />
+                  <polyline points="8 6 2 12 8 18" />
+                </svg>
               </div>
-              <p class="dash-empty-state__title">Aún no tienes challenges</p>
-              <p class="dash-empty-state__desc">Crea tu primer challenge y compártelo con la comunidad.</p>
-              <a href="challenge-form.html" class="btn-primary" style="margin-top:1rem;">Crear mi primer challenge</a>
+              <div class="dash-stat-card__value">2</div>
+              <div class="dash-stat-card__label">Challenges Creados</div>
             </div>
-          </section>
-
-          <!-- Challenges Resueltos -->
-          <section class="dash-section">
-            <div class="dash-section__header">
-              <h2 class="dash-section__title">Challenges Resueltos</h2>
-              <a href="challenges.html" class="dash-section__link">Ver todos →</a>
+            <div class="dash-stat-card">
+              <div class="dash-stat-card__icon dash-stat-card__icon--green">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+              <div class="dash-stat-card__value">5</div>
+              <div class="dash-stat-card__label">Resueltos</div>
             </div>
-            <div class="dash-challenges-list">
-              <article class="dash-challenge-item dash-challenge-item--solved">
-                <div class="dash-challenge-item__left">
-                  <span class="dash-challenge-item__check">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  </span>
-                  <div>
-                    <h3 class="dash-challenge-item__title">Valid Parentheses</h3>
-                    <p class="dash-challenge-item__meta">Stacks · Resuelto hace 2 días</p>
-                  </div>
-                </div>
-                <span class="badge badge--easy">Fácil</span>
-              </article>
-              <article class="dash-challenge-item dash-challenge-item--solved">
-                <div class="dash-challenge-item__left">
-                  <span class="dash-challenge-item__check">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  </span>
-                  <div>
-                    <h3 class="dash-challenge-item__title">Reverse Linked List</h3>
-                    <p class="dash-challenge-item__meta">Linked Lists · Resuelto hace 5 días</p>
-                  </div>
-                </div>
-                <span class="badge badge--easy">Fácil</span>
-              </article>
-              <article class="dash-challenge-item dash-challenge-item--solved">
-                <div class="dash-challenge-item__left">
-                  <span class="dash-challenge-item__check">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  </span>
-                  <div>
-                    <h3 class="dash-challenge-item__title">Coin Change</h3>
-                    <p class="dash-challenge-item__meta">Dynamic Programming · Resuelto hace 1 semana</p>
-                  </div>
-                </div>
-                <span class="badge badge--medium">Medio</span>
-              </article>
+            <div class="dash-stat-card">
+              <div class="dash-stat-card__icon dash-stat-card__icon--orange">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+              </div>
+              <div class="dash-stat-card__value">5</div>
+              <div class="dash-stat-card__label">Racha Actual</div>
             </div>
-          </section>
+            <div class="dash-stat-card">
+              <div class="dash-stat-card__icon dash-stat-card__icon--purple">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
+              <div class="dash-stat-card__value">4</div>
+              <div class="dash-stat-card__label">Interacciones</div>
+            </div>
+          </div>
         </div>
+      </section>
 
-        <!-- Right column -->
-        <aside class="dash-col-side">
-          <!-- Progress -->
-          <section class="dash-section">
-            <h2 class="dash-section__title">Progreso por Categoría</h2>
-            <div class="dash-progress-list">
-              <div class="dash-progress-item">
-                <div class="dash-progress-item__header">
-                  <span>Arrays</span><span>3/8</span>
-                </div>
-                <div class="dash-progress-bar"><div class="dash-progress-bar__fill" style="width:37.5%; background: var(--primary-500);"></div></div>
+      <!-- ========== DASHBOARD BODY ========== -->
+      <div class="dash-body">
+        <div class="dash-body__inner">
+          <!-- Left column -->
+          <div class="dash-col-main">
+            <!-- My Challenges -->
+            <section class="dash-section">
+              <div class="dash-section__header">
+                <h2 class="dash-section__title">Mis Challenges</h2>
+                <a href="challenge-form.html" class="dash-section__link">
+                  + Crear nuevo
+                </a>
               </div>
-              <div class="dash-progress-item">
-                <div class="dash-progress-item__header">
-                  <span>Strings</span><span>1/6</span>
-                </div>
-                <div class="dash-progress-bar"><div class="dash-progress-bar__fill" style="width:16.6%; background: #8b5cf6;"></div></div>
-              </div>
-              <div class="dash-progress-item">
-                <div class="dash-progress-item__header">
-                  <span>Trees</span><span>1/5</span>
-                </div>
-                <div class="dash-progress-bar"><div class="dash-progress-bar__fill" style="width:20%; background: var(--accent-500);"></div></div>
-              </div>
-              <div class="dash-progress-item">
-                <div class="dash-progress-item__header">
-                  <span>Dynamic Programming</span><span>1/7</span>
-                </div>
-                <div class="dash-progress-bar"><div class="dash-progress-bar__fill" style="width:14.3%; background: #f59e0b;"></div></div>
-              </div>
-            </div>
-          </section>
 
-          <!-- Notificación de error / feedback -->
-          <section class="dash-section">
-            <h2 class="dash-section__title">Notificaciones</h2>
-            <div class="dash-notifications">
-              <div class="dash-notification dash-notification--success">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                Tu solución de <strong>Valid Parentheses</strong> fue aprobada.
-              </div>
-              <div class="dash-notification dash-notification--info">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                3 usuarios intentaron resolver tu challenge <strong>Two Sum</strong>.
-              </div>
-              <div class="dash-notification dash-notification--empty">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                No tienes nuevas notificaciones pendientes.
-              </div>
-            </div>
-          </section>
-        </aside>
+              <!-- Estado: Con datos -->
+              <div class="dash-challenges-list" id="myChallengesList">
+                <article class="dash-challenge-item">
+                  <div class="dash-challenge-item__left">
+                    <span class="badge badge--easy">Fácil</span>
+                    <div>
+                      <h3 class="dash-challenge-item__title">Two Sum</h3>
+                      <p class="dash-challenge-item__meta">
+                        Arrays · 234 soluciones · 87% tasa de éxito
+                      </p>
+                    </div>
+                  </div>
+                  <div class="dash-challenge-item__actions">
+                    <a
+                      href="challenge-form.html?mode=edit&id=1"
+                      class="dash-action-btn"
+                      title="Editar"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                        />
+                        <path
+                          d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                        />
+                      </svg>
+                    </a>
+                    <button
+                      class="dash-action-btn dash-action-btn--danger"
+                      title="Eliminar"
+                      onclick="confirmDelete(this, 'Two Sum')"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <polyline points="3 6 5 6 21 6" />
+                        <path
+                          d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"
+                        />
+                        <path d="M10 11v6" />
+                        <path d="M14 11v6" />
+                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </article>
 
+                <article class="dash-challenge-item">
+                  <div class="dash-challenge-item__left">
+                    <span class="badge badge--medium">Medio</span>
+                    <div>
+                      <h3 class="dash-challenge-item__title">
+                        Merge Intervals
+                      </h3>
+                      <p class="dash-challenge-item__meta">
+                        Ordenamiento · 156 soluciones · 62% tasa de éxito
+                      </p>
+                    </div>
+                  </div>
+                  <div class="dash-challenge-item__actions">
+                    <a
+                      href="challenge-form.html?mode=edit&id=2"
+                      class="dash-action-btn"
+                      title="Editar"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                        />
+                        <path
+                          d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                        />
+                      </svg>
+                    </a>
+                    <button
+                      class="dash-action-btn dash-action-btn--danger"
+                      title="Eliminar"
+                      onclick="confirmDelete(this, 'Merge Intervals')"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <polyline points="3 6 5 6 21 6" />
+                        <path
+                          d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"
+                        />
+                        <path d="M10 11v6" />
+                        <path d="M14 11v6" />
+                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </article>
+              </div>
+
+              <!-- Estado: Vacío (oculto por defecto, se muestra con JS) -->
+              <div
+                class="dash-empty-state"
+                id="emptyChallenges"
+                style="display: none"
+              >
+                <div class="dash-empty-state__icon">
+                  <svg
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <polyline points="16 18 22 12 16 6" />
+                    <polyline points="8 6 2 12 8 18" />
+                  </svg>
+                </div>
+                <p class="dash-empty-state__title">Aún no tienes challenges</p>
+                <p class="dash-empty-state__desc">
+                  Crea tu primer challenge y compártelo con la comunidad.
+                </p>
+                <a
+                  href="challenge-form.html"
+                  class="btn-primary"
+                  style="margin-top: 1rem"
+                  >Crear mi primer challenge</a
+                >
+              </div>
+            </section>
+
+            <!-- Challenges Resueltos -->
+            <section class="dash-section">
+              <div class="dash-section__header">
+                <h2 class="dash-section__title">Challenges Resueltos</h2>
+                <a href="challenges.html" class="dash-section__link"
+                  >Ver todos →</a
+                >
+              </div>
+              <div class="dash-challenges-list">
+                <article
+                  class="dash-challenge-item dash-challenge-item--solved"
+                >
+                  <div class="dash-challenge-item__left">
+                    <span class="dash-challenge-item__check">
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    <div>
+                      <h3 class="dash-challenge-item__title">
+                        Valid Parentheses
+                      </h3>
+                      <p class="dash-challenge-item__meta">
+                        Stacks · Resuelto hace 2 días
+                      </p>
+                    </div>
+                  </div>
+                  <span class="badge badge--easy">Fácil</span>
+                </article>
+                <article
+                  class="dash-challenge-item dash-challenge-item--solved"
+                >
+                  <div class="dash-challenge-item__left">
+                    <span class="dash-challenge-item__check">
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    <div>
+                      <h3 class="dash-challenge-item__title">
+                        Reverse Linked List
+                      </h3>
+                      <p class="dash-challenge-item__meta">
+                        Linked Lists · Resuelto hace 5 días
+                      </p>
+                    </div>
+                  </div>
+                  <span class="badge badge--easy">Fácil</span>
+                </article>
+                <article
+                  class="dash-challenge-item dash-challenge-item--solved"
+                >
+                  <div class="dash-challenge-item__left">
+                    <span class="dash-challenge-item__check">
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    <div>
+                      <h3 class="dash-challenge-item__title">Coin Change</h3>
+                      <p class="dash-challenge-item__meta">
+                        Dynamic Programming · Resuelto hace 1 semana
+                      </p>
+                    </div>
+                  </div>
+                  <span class="badge badge--medium">Medio</span>
+                </article>
+              </div>
+            </section>
+          </div>
+
+          <!-- Right column -->
+          <aside class="dash-col-side">
+            <!-- Progress -->
+            <section class="dash-section">
+              <h2 class="dash-section__title">Progreso por Categoría</h2>
+              <div class="dash-progress-list">
+                <div class="dash-progress-item">
+                  <div class="dash-progress-item__header">
+                    <span>Arrays</span><span>3/8</span>
+                  </div>
+                  <div class="dash-progress-bar">
+                    <div
+                      class="dash-progress-bar__fill"
+                      style="width: 37.5%; background: var(--primary-500)"
+                    ></div>
+                  </div>
+                </div>
+                <div class="dash-progress-item">
+                  <div class="dash-progress-item__header">
+                    <span>Strings</span><span>1/6</span>
+                  </div>
+                  <div class="dash-progress-bar">
+                    <div
+                      class="dash-progress-bar__fill"
+                      style="width: 16.6%; background: #8b5cf6"
+                    ></div>
+                  </div>
+                </div>
+                <div class="dash-progress-item">
+                  <div class="dash-progress-item__header">
+                    <span>Trees</span><span>1/5</span>
+                  </div>
+                  <div class="dash-progress-bar">
+                    <div
+                      class="dash-progress-bar__fill"
+                      style="width: 20%; background: var(--accent-500)"
+                    ></div>
+                  </div>
+                </div>
+                <div class="dash-progress-item">
+                  <div class="dash-progress-item__header">
+                    <span>Dynamic Programming</span><span>1/7</span>
+                  </div>
+                  <div class="dash-progress-bar">
+                    <div
+                      class="dash-progress-bar__fill"
+                      style="width: 14.3%; background: #f59e0b"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Notificación de error / feedback -->
+            <section class="dash-section">
+              <h2 class="dash-section__title">Notificaciones</h2>
+              <div class="dash-notifications">
+                <div class="dash-notification dash-notification--success">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Tu solución de <strong>Valid Parentheses</strong> fue
+                  aprobada.
+                </div>
+                <div class="dash-notification dash-notification--info">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  3 usuarios intentaron resolver tu challenge
+                  <strong>Two Sum</strong>.
+                </div>
+                <div class="dash-notification dash-notification--empty">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                  </svg>
+                  No tienes nuevas notificaciones pendientes.
+                </div>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========== DELETE MODAL ========== -->
+    <div class="modal-overlay" id="deleteModal" style="display: none">
+      <div class="modal">
+        <div class="modal__icon">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+            <path d="M10 11v6" />
+            <path d="M14 11v6" />
+          </svg>
+        </div>
+        <h3 class="modal__title">¿Eliminar challenge?</h3>
+        <p class="modal__desc">
+          Esta acción no se puede deshacer. Se eliminarán también todas las
+          soluciones asociadas al challenge <strong id="deleteName"></strong>.
+        </p>
+        <div class="modal__actions">
+          <button class="btn-secondary" onclick="closeModal()">Cancelar</button>
+          <button class="modal__confirm-btn" onclick="doDelete()">
+            Sí, eliminar
+          </button>
+        </div>
       </div>
     </div>
-  </main>
 
-  <!-- ========== DELETE MODAL ========== -->
-  <div class="modal-overlay" id="deleteModal" style="display:none;">
-    <div class="modal">
-      <div class="modal__icon">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+      <div class="footer__inner">
+        <div class="footer__bottom">
+          <p class="footer__copy">
+            &copy; 2026 ComplexityLab. Todos los derechos reservados.
+          </p>
+        </div>
       </div>
-      <h3 class="modal__title">¿Eliminar challenge?</h3>
-      <p class="modal__desc">Esta acción no se puede deshacer. Se eliminarán también todas las soluciones asociadas al challenge <strong id="deleteName"></strong>.</p>
-      <div class="modal__actions">
-        <button class="btn-secondary" onclick="closeModal()">Cancelar</button>
-        <button class="modal__confirm-btn" onclick="doDelete()">Sí, eliminar</button>
-      </div>
-    </div>
-  </div>
+    </footer>
 
-  <!-- ========== FOOTER ========== -->
-  <footer class="footer">
-    <div class="footer__inner">
-      <div class="footer__bottom">
-        <p class="footer__copy">&copy; 2026 ComplexityLab. Todos los derechos reservados.</p>
-      </div>
-    </div>
-  </footer>
+    <script>
+      // Theme
+      const themeToggle = document.getElementById("themeToggle");
+      const root = document.documentElement;
+      const savedTheme = localStorage.getItem("complexitylab-theme") || "dark";
+      savedTheme === "dark"
+        ? root.classList.add("dark")
+        : root.classList.remove("dark");
+      themeToggle.addEventListener("click", () => {
+        root.classList.toggle("dark");
+        localStorage.setItem(
+          "complexitylab-theme",
+          root.classList.contains("dark") ? "dark" : "light",
+        );
+      });
 
-  <script>
-    // Theme
-    const themeToggle = document.getElementById('themeToggle');
-    const root = document.documentElement;
-    const savedTheme = localStorage.getItem('complexitylab-theme') || 'dark';
-    savedTheme === 'dark' ? root.classList.add('dark') : root.classList.remove('dark');
-    themeToggle.addEventListener('click', () => {
-      root.classList.toggle('dark');
-      localStorage.setItem('complexitylab-theme', root.classList.contains('dark') ? 'dark' : 'light');
-    });
+      // Hamburger
+      document.getElementById("hamburgerBtn").addEventListener("click", () => {
+        document.getElementById("mobileMenu").classList.toggle("active");
+      });
 
-    // Hamburger
-    document.getElementById('hamburgerBtn').addEventListener('click', () => {
-      document.getElementById('mobileMenu').classList.toggle('active');
-    });
-
-    // Delete modal
-    let targetItem = null;
-    function confirmDelete(btn, name) {
-      targetItem = btn.closest('.dash-challenge-item');
-      document.getElementById('deleteName').textContent = name;
-      document.getElementById('deleteModal').style.display = 'flex';
-    }
-    function closeModal() {
-      document.getElementById('deleteModal').style.display = 'none';
-      targetItem = null;
-    }
-    function doDelete() {
-      if (targetItem) {
-        targetItem.style.animation = 'fadeOut 0.3s ease forwards';
-        setTimeout(() => {
-          targetItem.remove();
-          const list = document.getElementById('myChallengesList');
-          if (list.children.length === 0) {
-            list.style.display = 'none';
-            document.getElementById('emptyChallenges').style.display = 'flex';
-          }
-        }, 300);
+      // Delete modal
+      let targetItem = null;
+      function confirmDelete(btn, name) {
+        targetItem = btn.closest(".dash-challenge-item");
+        document.getElementById("deleteName").textContent = name;
+        document.getElementById("deleteModal").style.display = "flex";
       }
-      closeModal();
-    }
+      function closeModal() {
+        document.getElementById("deleteModal").style.display = "none";
+        targetItem = null;
+      }
+      function doDelete() {
+        if (targetItem) {
+          targetItem.style.animation = "fadeOut 0.3s ease forwards";
+          setTimeout(() => {
+            targetItem.remove();
+            const list = document.getElementById("myChallengesList");
+            if (list.children.length === 0) {
+              list.style.display = "none";
+              document.getElementById("emptyChallenges").style.display = "flex";
+            }
+          }, 300);
+        }
+        closeModal();
+      }
 
-    // Close modal on overlay click
-    document.getElementById('deleteModal').addEventListener('click', function(e) {
-      if (e.target === this) closeModal();
-    });
-  </script>
-</body>
+      // Close modal on overlay click
+      document
+        .getElementById("deleteModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeModal();
+        });
+    </script>
+  </body>
 </html>
