@@ -49,7 +49,10 @@ El objetivo principal de nuestra aplicación es sembrar en el usuario un pensami
 
 ---
 
-## 🧠 **STACK TECNOLÓGICO**
+## 🧠 **STACK TECNOLÓGICO Y ARQUITECTURA**
+
+> Para un análisis exhaustivo del sistema (las 4 preguntas), por favor revisa el archivo [`docs/analisis.md`](./docs/analisis.md).
+> Para el diagrama de arquitectura completo con métodos HTTP, capas y el patrón arquitectónico (N-Layer), revisa el archivo [`docs/arquitectura.md`](./docs/arquitectura.md).
 
 ### 🎨 **CLIENTE**
 
@@ -64,7 +67,7 @@ El objetivo principal de nuestra aplicación es sembrar en el usuario un pensami
 
 ---
 
-## **DIAGRAMAS DEL CLIENTE**
+## **DIAGRAMA DEL FLUJO DEL CLIENTE**
 ```mermaid
 graph TD
     %% Definición de contenedores principales
