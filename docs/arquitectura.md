@@ -41,13 +41,14 @@ graph TD
 
 A nivel físico, en el repositorio el backend implementa esta arquitectura dividiéndose explícitamente en:
 
-```text
-backend/
-├── main.py         <- Módulo de entrada de la aplicación FastAPI.
-├── routers/        <- Capa de Presentación (Controladores). Define endpoints HTTP.
-├── schemas/        <- Capa de Transferencia (DTOs). Validación estricta Pydantic (entrada/salida).
-├── services/       <- Capa de Lógica de Negocio. Ejecuta las reglas, validaciones avanzadas e integraciones.
-└── models/         <- Capa de Acceso a Datos / Persistencia. Define los esquemas SQL usando Object-Relational Mapping (ORM).
+```mermaid
+text
+    backend/
+    ├── main.py         <- Módulo de entrada de la aplicación FastAPI.
+    ├── routers/        <- Capa de Presentación (Controladores). Define endpoints HTTP.
+    ├── schemas/        <- Capa de Transferencia (DTOs). Validación estricta Pydantic (entrada/salida).
+    ├── services/       <- Capa de Lógica de Negocio. Ejecuta las reglas, validaciones avanzadas e integraciones.
+    └── models/         <- Capa de Acceso a Datos / Persistencia. Define los esquemas SQL usando Object-Relational Mapping (ORM).
 ```
 
 ### Análisis de patrones
