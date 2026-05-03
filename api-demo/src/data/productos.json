@@ -1,0 +1,68 @@
+[
+  {
+    "id": 11,
+    "nombre": "Disco Duro HDD",
+    "precio": 800000,
+    "disponible": false
+  },
+  {
+    "id": 2,
+    "nombre": "Mouse inalambrico",
+    "precio": 80000,
+    "disponible": true
+  },
+  {
+    "id": 3,
+    "nombre": "Monitor 24 pulgadas",
+    "precio": 750000,
+    "disponible": false
+  },
+  {
+    "id": 4,
+    "nombre": "Auriculares gaming",
+    "precio": 120000,
+    "disponible": true
+  },
+  {
+    "id": 5,
+    "nombre": "Silla gamer",
+    "precio": 350000,
+    "disponible": false
+  },
+  {
+    "id": 6,
+    "nombre": "Tarjeta grafica",
+    "precio": 2000000,
+    "disponible": true
+  },
+  {
+    "id": 7,
+    "nombre": "Procesador",
+    "precio": 900000,
+    "disponible": true
+  },
+  {
+    "id": 8,
+    "nombre": "Memoria RAM",
+    "precio": 400000,
+    "disponible": true
+  },
+  {
+    "id": 9,
+    "nombre": "Disco duro SSD",
+    "precio": 300000,
+    "disponible": false
+  },
+  {
+    "id": 10,
+    "nombre": "Fuente de poder",
+    "precio": 250000,
+    "disponible": true
+  },
+  {
+    "id": 11,
+    "nombre": "D",
+    "precio": 800000,
+    "disponible": true
+  }
+]
