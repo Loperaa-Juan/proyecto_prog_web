@@ -316,6 +316,43 @@
   </div>
 </div>
 
+<!-- ── Modal: Confirmar Eliminación ─────────────────────────────────────────── -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-background/50 backdrop-blur-sm p-4" id="deleteModal">
+  <div class="bg-surface-container-lowest border border-outline-variant rounded-DEFAULT p-lg w-full max-w-sm shadow-xl">
+
+    <div class="flex flex-col items-center gap-md text-center">
+      <div class="w-12 h-12 rounded-full bg-error-container flex items-center justify-center">
+        <span class="material-symbols-outlined text-error text-[24px]">delete_forever</span>
+      </div>
+      <div>
+        <h3 class="font-headline-sm text-headline-sm font-semibold text-on-background">¿Eliminar producto?</h3>
+        <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+          Vas a eliminar <strong id="delete-product-name" class="text-on-background"></strong>. Esta acción no se puede deshacer.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-lg flex gap-md justify-end">
+      <button
+        class="py-2 px-4 border border-outline-variant text-on-surface-variant font-body-sm text-body-sm font-semibold rounded-DEFAULT hover:bg-surface-variant transition-colors"
+        onclick="closeDeleteModal()"
+        type="button"
+      >
+        Cancelar
+      </button>
+      <button
+        class="py-2 px-4 bg-error text-on-error font-body-sm text-body-sm font-semibold rounded-DEFAULT hover:opacity-90 transition-opacity flex items-center gap-2"
+        id="confirm-delete-btn"
+        type="button"
+      >
+        <span class="material-symbols-outlined text-[16px]">delete</span>
+        Eliminar
+      </button>
+    </div>
+
+  </div>
+</div>
+
 <script src="app.js"></script>
 </body>
 </html>

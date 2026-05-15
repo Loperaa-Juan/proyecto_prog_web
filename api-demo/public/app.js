@@ -5,6 +5,9 @@ const tbody          = document.getElementById("inventory-body");
 const emptyRow       = document.getElementById("empty-row");
 const paginationInfo = document.getElementById("pagination-info");
 const modal          = document.getElementById("productModal");
+const deleteModal        = document.getElementById("deleteModal");
+const deleteProductName  = document.getElementById("delete-product-name");
+const confirmDeleteBtn   = document.getElementById("confirm-delete-btn");
 const form           = document.getElementById("product-form");
 const nameInput      = document.getElementById("product_name");
 const priceInput     = document.getElementById("product_price");
@@ -160,14 +163,27 @@ async function toggleDisponible(id) {
 }
 
 // ── DELETE: eliminar con confirmación ─────────────────────────────────────────
-async function handleDelete(id) {
-  if (!confirm("¿Eliminar este producto? Esta acción no se puede deshacer.")) return;
-  try {
-    await apiFetch(`${API}/${id}`, { method: "DELETE" });
-    await renderTable();
-  } catch (err) {
-    console.error("handleDelete:", err);
-  }
+function handleDelete(id) {
+  const row = tbody.querySelector(`tr[data-id="${id}"]`);
+  const nombre = row ? decodeURIComponent(row.dataset.nombre) : "este producto";
+
+  deleteProductName.textContent = nombre;
+  deleteModal.classList.remove("hidden");
+
+  confirmDeleteBtn.onclick = async () => {
+    closeDeleteModal();
+    try {
+      await apiFetch(`${API}/${id}`, { method: "DELETE" });
+      await renderTable();
+    } catch (err) {
+      console.error("handleDelete:", err);
+    }
+  };
+}
+
+function closeDeleteModal() {
+  deleteModal.classList.add("hidden");
+  confirmDeleteBtn.onclick = null;
 }
 
 // ── Modal ─────────────────────────────────────────────────────────────────────
@@ -257,6 +273,10 @@ form.addEventListener("submit", async (e) => {
     submitBtn.textContent = "Agregar";
   }
 });
+
+// ── Cerrar modales al clic en el backdrop ────────────────────────────────────
+modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+deleteModal.addEventListener("click", (e) => { if (e.target === deleteModal) closeDeleteModal(); });
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 renderTable();

@@ -12,12 +12,6 @@
     "disponible": true
   },
   {
-    "id": 7,
-    "nombre": "Procesador",
-    "precio": 900000,
-    "disponible": true
-  },
-  {
     "id": 8,
     "nombre": "Memoria RAM",
     "precio": 400000,
