@@ -1,0 +1,73 @@
+/* TechFlow Pro — Design System Custom Styles */
+
+:root {
+  --color-primary: #0f172a;
+  --color-secondary: #64748b;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-surface: #fcf8fa;
+  --color-outline: #76777d;
+  --color-outline-variant: #c6c6cd;
+}
+
+/* ── Status chips ── */
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.status-available {
+  background-color: #dcfce7;
+  color: #166534;
+  border-color: #bbf7d0;
+}
+
+.status-in-use {
+  background-color: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+.status-unavailable {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+
+/* ── Status indicator bar (left edge of card/row) ── */
+.status-bar-available   { background-color: var(--color-success); }
+.status-bar-in-use      { background-color: var(--color-warning); }
+.status-bar-unavailable { background-color: var(--color-danger); }
+
+/* ── Table row action buttons ── */
+.row-actions {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+tbody tr:hover .row-actions {
+  opacity: 1;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--color-secondary);
+  font-size: 14px;
+}
+
+.empty-state span.material-symbols-outlined {
+  display: block;
+  font-size: 40px;
+  margin-bottom: 12px;
+  opacity: 0.4;
+}

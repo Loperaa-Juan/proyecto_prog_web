@@ -42,15 +42,15 @@ export const crear = (req, res) => {
 export const actualizar = (req, res) => {
   const productos = leer();
   const id = parseInt(req.params.id);
-  const indice = productos.findIndex((p) => (p.id = id));
+  const indice = productos.findIndex((p) => p.id === id);
 
-  if (indice == -1) {
+  if (indice === -1) {
     return res.status(404).json({ error: "Producto no encontrado" });
   }
 
   const { nombre, precio, disponible } = req.body;
 
-  if (!nombre | !precio) {
+  if (!nombre || !precio) {
     return res.status(400).json({ error: "nombre y precio son obligatorios" });
   }
 
@@ -61,16 +61,16 @@ export const actualizar = (req, res) => {
 };
 
 export const eliminar = (req, res) => {
-  const productos = service.leer();
+  const productos = leer();
   const id = parseInt(req.params.id);
-  const indice = productos.findIndex((p) => (p.id = id));
+  const indice = productos.findIndex((p) => p.id === id);
 
-  if ((indice = -1)) {
+  if (indice === -1) {
     return res.status(404).json({ error: "Producto no encontrado" });
   }
 
   productos.splice(indice, 1);
-  service.guardar(productos);
+  guardar(productos);
 
   res.status(204).send();
 };

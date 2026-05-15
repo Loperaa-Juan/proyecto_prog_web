@@ -1,6 +1,10 @@
 // Definimos nuestra app de express
 import express from "express";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 import { router as productosRoutes } from './routes/productos.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const app = express();
 
@@ -22,16 +26,15 @@ app.use((req, res, next) => {
   next();
 });
 
+// Archivos estáticos (frontend)
+app.use(express.static(join(__dirname, "../public")));
+
 // Rutas
 app.use("/api/productos", productosRoutes);
 
-// Ruta raíz
+// Ruta raíz → sirve el index.html
 app.get("/", (req, res) => {
-  res.json({
-    mensaje: "API funcionando",
-    version: "1.0.0",
-    endpoints: { productos: "/api/productos" },
-  });
+  res.sendFile(join(__dirname, "../public/index.html"));
 });
 
 app.use((req, res) => {
