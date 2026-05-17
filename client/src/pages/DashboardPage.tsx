@@ -111,7 +111,7 @@ export default function DashboardPage() {
         {/* ===== ESTADÍSTICAS ===== */}
         {stats && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard icon={<Code2 size={22} />}  label="Creados"      value={stats.challengesCreated} color="primary" />
+            <StatCard icon={<Code2 size={22} />}  label="Creados"      value={myChallenges.length}     color="primary" />
             <StatCard icon={<Trophy size={22} />}  label="Resueltos"    value={stats.solved}            color="accent"  />
             <StatCard icon={<Flame size={22} />}   label="Días seguidos" value={stats.currentStreak}   color="violet"  />
             <StatCard icon={<Activity size={22} />} label="Interacciones" value={stats.interactions}   color="amber"   />

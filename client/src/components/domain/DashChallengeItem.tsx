@@ -37,6 +37,11 @@ export function DashChallengeItem({
           </h4>
           <DifficultyBadge difficulty={challenge.difficulty} />
         </div>
+        {challenge.description && (
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 line-clamp-2">
+            {challenge.description}
+          </p>
+        )}
         <p className="text-xs text-zinc-400 mt-0.5">
           {variant === 'own' ? 'Creado ' : 'Resuelto '}
           {formatRelativeDate(challenge.createdAt)}
