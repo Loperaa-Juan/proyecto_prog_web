@@ -23,7 +23,7 @@ import { Spinner } from '@/components/feedback/Spinner';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
-import { isValidEmail } from '@/lib/validation';
+
 
 interface FormErrors {
   email?: string;
@@ -48,7 +48,7 @@ export default function LoginPage() {
    */
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
-    if (!isValidEmail(email)) newErrors.email = 'Ingresa un correo electrónico válido';
+    if (!email.trim()) newErrors.email = 'Ingresa tu nombre de usuario';
     if (password.length < 6) newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -134,14 +134,14 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} noValidate className="space-y-5">
               <FormInput
                 id="loginEmail"
-                label="Correo electrónico"
-                type="email"
+                label="Nombre de Usuario"
+                type="text"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: undefined })); }}
                 error={errors.email}
                 icon={<Mail size={16} />}
-                placeholder="correo@ejemplo.com"
-                autoComplete="email"
+                placeholder="Tu nombre de usuario"
+                autoComplete="username"
               />
 
               <PasswordInput

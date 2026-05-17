@@ -24,6 +24,7 @@ export interface AuthCredentials {
 /** Payload para el formulario de registro */
 export interface RegisterPayload {
   name: string;
+  username: string;
   email: string;
   password: string;
 }
