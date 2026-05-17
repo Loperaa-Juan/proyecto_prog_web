@@ -45,15 +45,19 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
     throw new Error(extractError(err, res.statusText));
   }
 
+  if (res.status === 204 || res.headers.get('content-length') === '0') {
+    return undefined as T;
+  }
+
   return res.json() as Promise<T>;
 }
 
-async function requestForm<T>(path: string, form: FormData): Promise<T> {
+async function requestForm<T>(method: string, path: string, form: FormData): Promise<T> {
   const session = getJSON<AuthSession>(STORAGE_KEYS.USER);
   const headers: Record<string, string> = {};
   if (session?.token) headers['Authorization'] = `Bearer ${session.token}`;
 
-  const res = await fetch(`${BASE_URL}${path}`, { method: 'POST', headers, body: form });
+  const res = await fetch(`${BASE_URL}${path}`, { method, headers, body: form });
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({} as Record<string, unknown>));
@@ -69,5 +73,6 @@ export const http = {
   post: <T>(path: string, body: unknown) => request<T>('POST', path, body),
   put: <T>(path: string, body: unknown) => request<T>('PUT', path, body),
   delete: <T>(path: string) => request<T>('DELETE', path),
-  postForm: <T>(path: string, form: FormData) => requestForm<T>(path, form),
+  postForm: <T>(path: string, form: FormData) => requestForm<T>('POST', path, form),
+  putForm: <T>(path: string, form: FormData) => requestForm<T>('PUT', path, form),
 };

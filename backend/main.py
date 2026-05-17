@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Optional
 
 # from fastapi.middleware.cors import CORSMiddleware
 import sqlalchemy.orm as _orm
@@ -8,8 +9,6 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 import schemas.user as _user
 import services.challenge as _challengeServices
-
-# import models.user as _user
 import services.user as _userServices
 from models.challenge import Difficulty
 from services import database as _databaseServices
@@ -27,17 +26,17 @@ async def root():
     return RedirectResponse(url="/docs")
 
 
-@app.get("/health")
+@app.get("/health", tags=["Health Check"])
 def health_check():
     return {"status": "OK"}
 
 
-@app.get("/api/users/me", response_model=_user.UserResponse)
+@app.get("/api/users/me", response_model=_user.UserResponse, tags=["Users"])
 async def get_user(user: _user.User = Depends(_userServices.get_current_user)):
     return user
 
 
-@app.post("/api/token")
+@app.post("/api/token", tags=["Authentication"])
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: _orm.Session = Depends(_databaseServices.get_db),
@@ -55,7 +54,7 @@ async def login(
     return {"access_token": access_token_jwt, "token_type": "bearer"}
 
 
-@app.post("/api/users")
+@app.post("/api/users", tags=["Users"])
 async def create_user(
     user: _user.UserCreate, db: _orm.Session = Depends(_databaseServices.get_db)
 ):
@@ -71,7 +70,29 @@ async def create_user(
     }
 
 
-@app.post("/api/challenge")
+@app.get("/api/challenges/me", tags=["Challenges"])
+async def get_challenges_by_user(
+    user: _user.User = Depends(_userServices.get_current_user),
+    db: _orm.Session = Depends(_databaseServices.get_db),
+):
+    return await _challengeServices.get_challenges_by_user(user, db)
+
+
+@app.get("/api/challenges", tags=["Challenges"])
+async def get_all_challenges(db: _orm.Session = Depends(_databaseServices.get_db)):
+    return await _challengeServices.get_all_challenges(db)
+
+
+@app.get("/api/challenges/{challenge_id}", tags=["Challenges"])
+async def get_challenge_by_id(
+    challenge_id: str,
+    user: _user.User = Depends(_userServices.get_current_user),
+    db: _orm.Session = Depends(_databaseServices.get_db),
+):
+    return await _challengeServices.get_challenge_by_id(challenge_id, db, user)
+
+
+@app.post("/api/challenges", tags=["Challenges"])
 async def create_challenge(
     title: str = Form(...),
     description: str = Form(...),
@@ -82,4 +103,38 @@ async def create_challenge(
 ):
     return await _challengeServices.create_challenge(
         user, title, description, difficulty, tags, db
+    )
+
+
+@app.put("/api/challenges/{challenge_id}", tags=["Challenges"])
+async def update_challenge(
+    challenge_id: str,
+    title: Optional[str] = Form(None),
+    description: Optional[str] = Form(None),
+    difficulty: Optional[Difficulty] = Form(None),
+    tags: Optional[list[str]] = Form(None),
+    user: _user.User = Depends(_userServices.get_current_user),
+    db: _orm.Session = Depends(_databaseServices.get_db),
+):
+    return await _challengeServices.update_challenge(
+        Challengeid=challenge_id,
+        user=user,
+        db=db,
+        title=title,
+        description=description,
+        difficulty=difficulty,
+        tags=tags,
+    )
+
+
+@app.delete("/api/challenges/{challenge_id}", tags=["Challenges"])
+async def delete_challenge(
+    challenge_id: str,
+    user: _user.User = Depends(_userServices.get_current_user),
+    db: _orm.Session = Depends(_databaseServices.get_db),
+):
+    return await _challengeServices.delete_challenge(
+        Challengeid=challenge_id,
+        user=user,
+        db=db,
     )
