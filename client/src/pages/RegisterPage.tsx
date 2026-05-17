@@ -27,6 +27,7 @@ import { isValidEmail, scorePassword, minLength } from '@/lib/validation';
 
 interface FormErrors {
   name?: string;
+  username?: string;
   email?: string;
   password?: string;
   confirm?: string;
@@ -47,6 +48,7 @@ export default function RegisterPage() {
   const { showToast } = useToast();
 
   const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -62,6 +64,8 @@ export default function RegisterPage() {
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
     if (!minLength(name, 2)) newErrors.name = 'El nombre debe tener al menos 2 caracteres';
+    if (!minLength(username, 3)) newErrors.username = 'El nombre de usuario debe tener al menos 3 caracteres';
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) newErrors.username = 'Solo letras, números y guion bajo (_)';
     if (!isValidEmail(email)) newErrors.email = 'Ingresa un correo electrónico válido';
     if (password.length < 8) newErrors.password = 'La contraseña debe tener al menos 8 caracteres';
     if (password !== confirm) newErrors.confirm = 'Las contraseñas no coinciden';
@@ -80,7 +84,7 @@ export default function RegisterPage() {
     e.preventDefault();
     if (!validate()) return;
     try {
-      await register({ name: name.trim(), email: email.trim(), password });
+      await register({ name: name.trim(), username: username.trim(), email: email.trim(), password });
       showToast('¡Cuenta creada! Inicia sesión para continuar.', 'success');
       navigate('/login');
     } catch (err) {
@@ -148,6 +152,18 @@ export default function RegisterPage() {
                 icon={<User size={16} />}
                 placeholder="Tu nombre"
                 autoComplete="name"
+              />
+
+              <FormInput
+                id="registerUsername"
+                label="Nombre de usuario"
+                type="text"
+                value={username}
+                onChange={(e) => { setUsername(e.target.value); setErrors((p) => ({ ...p, username: undefined })); }}
+                error={errors.username}
+                icon={<User size={16} />}
+                placeholder="ej: juan_dev"
+                autoComplete="username"
               />
 
               <FormInput
