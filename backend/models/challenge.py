@@ -26,11 +26,11 @@ class Challenge(_database.Base):
     difficulty: Mapped[Difficulty] = mapped_column(
         _sql.Enum(Difficulty), nullable=False
     )
-    code_snippet = _sql.Column(_sql.Text)
+    tags = _sql.Column(_sql.ARRAY(_sql.String))
     status = _sql.Column(_sql.String, default="active")
-    created_at = _sql.Column(_sql.DateTime, default=_dt.datetime.utcnow)
+    created_at = _sql.Column(_sql.DateTime, default=_dt.datetime.now)
     updated_at = _sql.Column(
-        _sql.DateTime, default=_dt.datetime.utcnow, onupdate=_dt.datetime.utcnow
+        _sql.DateTime, default=_dt.datetime.now, onupdate=_dt.datetime.now
     )
 
     user = _sql.orm.relationship("User", back_populates="challenges")

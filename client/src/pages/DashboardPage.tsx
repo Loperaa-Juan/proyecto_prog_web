@@ -11,7 +11,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Code2, Trophy, Flame, Activity } from 'lucide-react';
 import { Avatar } from '@/components/domain/Avatar';
 import { StatCard } from '@/components/domain/StatCard';
@@ -31,6 +31,7 @@ import type { DashboardStats, ProgressItem, Notification, Challenge } from '@/ty
 export default function DashboardPage() {
   useDocumentTitle('Dashboard');
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [myChallenges, setMyChallenges] = useState<Challenge[]>([]);
@@ -132,7 +133,7 @@ export default function DashboardPage() {
                   icon={<Code2 size={36} />}
                   title="Sin desafíos propios"
                   description="Todavía no has creado ningún desafío. ¡Empieza ahora!"
-                  action={{ label: 'Crear desafío', onClick: () => {} }}
+                  action={{ label: 'Crear desafío', onClick: () => navigate('/challenges/new') }}
                 />
               ) : (
                 <div>

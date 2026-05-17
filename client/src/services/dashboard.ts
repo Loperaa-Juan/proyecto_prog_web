@@ -18,10 +18,11 @@ import { getCurrentUser } from './auth';
  */
 export async function getStats(): Promise<DashboardStats> {
   await randomDelay(400, 700);
+  const user = getCurrentUser();
   return {
     challengesCreated: 5,
     solved: 18,
-    currentStreak: 7,
+    currentStreak: user?.streak ?? 0,
     interactions: 234,
   };
 }

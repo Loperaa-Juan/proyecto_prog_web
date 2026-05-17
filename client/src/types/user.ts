@@ -13,6 +13,7 @@ export interface User {
   initials: string;
   level: 'Principiante' | 'Intermedio' | 'Avanzado';
   joinedAt: string; // ISO 8601
+  streak: number;
 }
 
 /** Credenciales para el formulario de login */

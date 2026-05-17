@@ -18,6 +18,7 @@ interface UserMeResponse {
   username: string;
   email: string;
   full_name: string;
+  streak: number;
 }
 
 function extractApiError(err: unknown): string {
@@ -50,6 +51,7 @@ function buildUser(me: UserMeResponse): User {
     initials,
     level: "Principiante",
     joinedAt: new Date().toISOString(),
+    streak: me.streak ?? 0,
   };
 }
 

@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Union
 
 import fastapi.security as _security
@@ -43,6 +43,20 @@ async def create_user(user: user_schema.UserCreate, db: _orm.Session):
     return user_obj
 
 
+# Función para actualizar el streak del usuario
+def _update_streak(user: _User, now: datetime) -> None:
+    today = now.date()
+    last = user.last_login.date() if user.last_login else None
+
+    # En caso de que el usuario no haya iniciado sesión antes o haya pasado más de un día desde su último inicio de sesión, reiniciamos el streak a 1.
+    if last is None or (today - last).days > 1:
+        user.streak = 1
+    elif (today - last).days == 1:
+        user.streak += 1
+
+    user.last_login = now
+
+
 async def authenticate_user(username: str, password: str, db: _orm.Session):
     user = await get_user_by_username(db=db, username=username)
 
@@ -59,6 +73,9 @@ async def authenticate_user(username: str, password: str, db: _orm.Session):
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+    _update_streak(user, datetime.now(timezone.utc))
+    db.commit()
     return user
 
 
@@ -66,9 +83,9 @@ def create_token(data: dict, time_expire: Union[datetime, None] = None):
     data_copy = data.copy()
 
     if time_expire is None:
-        expires = datetime.utcnow() + timedelta(minutes=15)
+        expires = datetime.now(timezone.utc) + timedelta(minutes=15)
     else:
-        expires = datetime.utcnow() + time_expire
+        expires = datetime.now(timezone.utc) + time_expire
     data_copy.update({"exp": expires})
     token_jwt = jwt.encode(data_copy, key=JWT_SECRET, algorithm=ALGORITHM)
 

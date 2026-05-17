@@ -22,14 +22,17 @@ const BASE_URL = '/api';
  * @param body - Cuerpo de la petición (opcional, se serializa como JSON).
  * @returns Promesa con la respuesta deserializada del tipo T.
  */
+function extractError(err: Record<string, unknown>, fallback: string): string {
+  if (typeof err.detail === 'string') return err.detail;
+  if (Array.isArray(err.detail)) return String((err.detail[0] as Record<string, unknown>)?.msg ?? fallback);
+  if (typeof err.message === 'string') return err.message;
+  return fallback;
+}
+
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
   const session = getJSON<AuthSession>(STORAGE_KEYS.USER);
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
-  if (session?.token) {
-    headers['Authorization'] = `Bearer ${session.token}`;
-  }
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (session?.token) headers['Authorization'] = `Bearer ${session.token}`;
 
   const res = await fetch(`${BASE_URL}${path}`, {
     method,
@@ -38,8 +41,23 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
   });
 
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(err.message ?? 'Error de servidor');
+    const err = await res.json().catch(() => ({} as Record<string, unknown>));
+    throw new Error(extractError(err, res.statusText));
+  }
+
+  return res.json() as Promise<T>;
+}
+
+async function requestForm<T>(path: string, form: FormData): Promise<T> {
+  const session = getJSON<AuthSession>(STORAGE_KEYS.USER);
+  const headers: Record<string, string> = {};
+  if (session?.token) headers['Authorization'] = `Bearer ${session.token}`;
+
+  const res = await fetch(`${BASE_URL}${path}`, { method: 'POST', headers, body: form });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({} as Record<string, unknown>));
+    throw new Error(extractError(err, res.statusText));
   }
 
   return res.json() as Promise<T>;
@@ -47,12 +65,9 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 
 /** Métodos HTTP exportados listos para usar en los servicios */
 export const http = {
-  /** @param path - Ruta relativa. @returns Respuesta deserializada. */
   get: <T>(path: string) => request<T>('GET', path),
-  /** @param path - Ruta relativa. @param body - Cuerpo JSON. @returns Respuesta deserializada. */
   post: <T>(path: string, body: unknown) => request<T>('POST', path, body),
-  /** @param path - Ruta relativa. @param body - Cuerpo JSON. @returns Respuesta deserializada. */
   put: <T>(path: string, body: unknown) => request<T>('PUT', path, body),
-  /** @param path - Ruta relativa. @returns Respuesta deserializada. */
   delete: <T>(path: string) => request<T>('DELETE', path),
+  postForm: <T>(path: string, form: FormData) => requestForm<T>(path, form),
 };

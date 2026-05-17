@@ -47,6 +47,7 @@ class UserResponse(_pydantic.BaseModel):
     Userid: UUID
     username: str
     full_name: str
+    streak: int
     email: str
 
     model_config = {"from_attributes": True}

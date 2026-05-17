@@ -11,7 +11,24 @@
 import { randomDelay } from '@/lib/delay';
 import { mockChallenges } from '@/data/mockChallenges';
 import { getCurrentUser } from './auth';
+import { http } from './http';
 import type { Challenge, ChallengeFilter, ChallengePayload, Paginated } from '@/types';
+
+interface BackendChallenge {
+  Challengeid: string;
+  Userid: string;
+  title: string;
+  description: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  tags: string[];
+  created_at: string;
+}
+
+const CATEGORY_LABELS: Record<string, string> = {
+  arrays: 'Arreglos', strings: 'Cadenas', linkedlist: 'Listas Enlazadas',
+  trees: 'Árboles', graphs: 'Grafos', dp: 'Prog. Dinámica',
+  sorting: 'Ordenamiento', stacks: 'Pilas',
+};
 
 /** Clon del array original para no afectar el módulo de datos */
 const challenges: Challenge[] = [...mockChallenges];
@@ -101,30 +118,31 @@ export async function getById(id: string): Promise<Challenge> {
  * @throws Error si el usuario no está autenticado.
  */
 export async function create(payload: ChallengePayload): Promise<Challenge> {
-  await randomDelay(600, 1100);
-
   const user = getCurrentUser();
   if (!user) throw new Error('Debes iniciar sesión para crear un desafío');
 
-  const CATEGORY_LABELS: Record<string, string> = {
-    arrays: 'Arreglos', strings: 'Cadenas', linkedlist: 'Listas Enlazadas',
-    trees: 'Árboles', graphs: 'Grafos', dp: 'Prog. Dinámica',
-    sorting: 'Ordenamiento', stacks: 'Pilas',
-  };
+  const form = new FormData();
+  form.append('title', payload.title.trim());
+  form.append('description', payload.description.trim());
+  form.append('difficulty', payload.difficulty);
+  payload.tags.forEach((tag) => form.append('tags', tag));
 
+  const data = await http.postForm<BackendChallenge>('/challenge', form);
+
+  const cat = payload.category ?? 'arrays';
   const newChallenge: Challenge = {
-    id: `u-${Date.now()}`,
-    title: payload.title.trim(),
-    description: payload.description.trim(),
-    difficulty: payload.difficulty,
-    category: payload.category ?? 'arrays',
-    categoryLabel: CATEGORY_LABELS[payload.category ?? 'arrays'] ?? 'Arreglos',
-    tags: payload.tags,
+    id: String(data.Challengeid),
+    title: data.title,
+    description: data.description,
+    difficulty: data.difficulty,
+    category: cat,
+    categoryLabel: CATEGORY_LABELS[cat] ?? 'Arreglos',
+    tags: data.tags,
     codeTemplate: payload.codeTemplate,
     authorId: user.id,
     authorName: user.name,
     authorInitials: user.initials,
-    createdAt: new Date().toISOString(),
+    createdAt: data.created_at,
     solutionsCount: 0,
     successRate: 0,
   };
@@ -150,12 +168,6 @@ export async function update(id: string, payload: ChallengePayload): Promise<Cha
   if (challenges[idx].authorId !== user?.id) {
     throw new Error('No tienes permiso para editar este desafío');
   }
-
-  const CATEGORY_LABELS: Record<string, string> = {
-    arrays: 'Arreglos', strings: 'Cadenas', linkedlist: 'Listas Enlazadas',
-    trees: 'Árboles', graphs: 'Grafos', dp: 'Prog. Dinámica',
-    sorting: 'Ordenamiento', stacks: 'Pilas',
-  };
 
   const updated: Challenge = {
     ...challenges[idx],
