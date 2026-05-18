@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import {
   ChevronRight, Send, Bot, Code2, RotateCcw,
-  ChevronDown, SendHorizonal, Check,
+  ChevronDown, SendHorizonal, Check, FileText,
 } from 'lucide-react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, vs } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -70,12 +70,18 @@ const BOT_REPLY =
 export default function SolvePage() {
   const { id } = useParams<{ id: string }>();
   const navigate  = useNavigate();
+  const location  = useLocation();
   const { showToast } = useToast();
   const { isDark }    = useTheme();
+
+  const initialCode = (location.state as { initialCode?: string } | null)?.initialCode;
 
   /* page state */
   const [challenge,    setChallenge]    = useState<Challenge | null>(null);
   const [pageLoading,  setPageLoading]  = useState(true);
+
+  /* left panel tab */
+  const [leftTab, setLeftTab] = useState<'description' | 'editor'>('description');
 
   /* editor state */
   const [language,     setLanguage]     = useState('javascript');
@@ -108,7 +114,7 @@ export default function SolvePage() {
       .getById(id)
       .then((c) => {
         setChallenge(c);
-        setCode(c.codeTemplate ?? '// Escribe tu solución aquí\n');
+        setCode(initialCode ?? c.codeTemplate ?? '// Escribe tu solución aquí\n');
         setMessages([initialBotMessage(c.title)]);
       })
       .catch(() => {
@@ -242,132 +248,154 @@ export default function SolvePage() {
       {/* ── Split panels ───────────────────────────────────────── */}
       <div className="flex flex-1 overflow-hidden">
 
-        {/* ════ LEFT: Code Editor ════════════════════════════════ */}
+        {/* ════ LEFT: Descripción + Editor ══════════════════════ */}
         <div className="flex flex-col w-1/2 border-r border-zinc-200 dark:border-dark-600">
 
-          {/* Toolbar */}
-          <div className="shrink-0 flex items-center justify-between px-4 py-2 bg-zinc-100 dark:bg-dark-700 border-b border-zinc-200 dark:border-dark-600">
-            <div className="flex items-center gap-2">
-              <Code2 size={15} className="text-zinc-500 dark:text-zinc-400" />
-              <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300">Editor</span>
-
-              {/* Language selector */}
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                className="ml-1 px-2 py-0.5 rounded text-xs bg-zinc-200 dark:bg-dark-600 text-zinc-600 dark:text-zinc-300 border-0 outline-none cursor-pointer hover:bg-zinc-300 dark:hover:bg-dark-500 transition-colors"
-              >
-                {LANGUAGES.map((l) => (
-                  <option key={l.value} value={l.value}>{l.label}</option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              onClick={() => {
-                if (challenge) setCode(challenge.codeTemplate ?? '// Escribe tu solución aquí\n');
-              }}
-              className="flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
-            >
-              <RotateCcw size={12} />
-              Reiniciar
-            </button>
+          {/* Tab bar */}
+          <div className="shrink-0 flex border-b border-zinc-200 dark:border-dark-600 bg-zinc-50 dark:bg-dark-700">
+            {([ ['description', FileText, 'Descripción'], ['editor', Code2, 'Editor'] ] as const).map(
+              ([tab, Icon, label]) => (
+                <button
+                  key={tab}
+                  onClick={() => setLeftTab(tab)}
+                  className={cn(
+                    'flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium border-b-2 transition-colors',
+                    leftTab === tab
+                      ? 'border-primary-500 text-primary-500'
+                      : 'border-transparent text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200',
+                  )}
+                >
+                  <Icon size={13} />
+                  {label}
+                </button>
+              )
+            )}
           </div>
 
-          {/* Editor area */}
-          <div
-            className="flex flex-1 overflow-hidden"
-            style={{ backgroundColor: editorBg, fontFamily: MONO_FONT, fontSize: CODE_SIZE }}
-          >
-            {/* Line numbers */}
-            <div
-              ref={lineNumsRef}
-              className="select-none overflow-hidden shrink-0 w-11 py-3 pr-3 text-right text-xs leading-5 bg-zinc-100 dark:bg-dark-800 border-r border-zinc-200 dark:border-dark-600 text-zinc-400 dark:text-zinc-600"
-              style={{ lineHeight: CODE_LINE_H }}
-              aria-hidden
-            >
-              {Array.from({ length: lineCount }, (_, i) => (
-                <div key={i}>{i + 1}</div>
-              ))}
+          {leftTab === 'description' ? (
+            /* ── Descripción ── */
+            <div className="flex-1 overflow-y-auto px-6 py-5 bg-white dark:bg-dark-800">
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <h2 className="text-lg font-bold text-zinc-900 dark:text-white leading-tight">
+                  {challenge.title}
+                </h2>
+                <DifficultyBadge difficulty={challenge.difficulty} />
+              </div>
+              {challenge.tags && challenge.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {challenge.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2 py-0.5 rounded-full text-xs font-medium bg-primary-500/10 text-primary-500"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap">
+                {challenge.description}
+              </p>
             </div>
-
-            {/* Overlay: highlighter + textarea */}
-            <div className="relative flex-1 overflow-hidden">
-              {/* Syntax highlight layer (non-interactive, clipped) */}
-              <div
-                ref={hlWrapperRef}
-                className="absolute inset-0 overflow-hidden pointer-events-none"
-              >
-                <SyntaxHighlighter
-                  language={language}
-                  style={hlStyle}
-                  showLineNumbers={false}
-                  customStyle={{
-                    margin: 0,
-                    padding: CODE_PAD,
-                    fontSize: CODE_SIZE,
-                    lineHeight: CODE_LINE_H,
-                    fontFamily: MONO_FONT,
-                    background: 'transparent',
-                    overflow: 'visible',
-                    whiteSpace: 'pre',
-                    minWidth: '100%',
-                  }}
-                  codeTagProps={{
-                    style: {
-                      fontFamily: MONO_FONT,
-                      fontSize: CODE_SIZE,
-                      lineHeight: CODE_LINE_H,
-                    },
-                  }}
+          ) : (
+            /* ── Editor ── */
+            <>
+              {/* Toolbar */}
+              <div className="shrink-0 flex items-center justify-between px-4 py-2 bg-zinc-100 dark:bg-dark-700 border-b border-zinc-200 dark:border-dark-600">
+                <div className="flex items-center gap-2">
+                  <Code2 size={15} className="text-zinc-500 dark:text-zinc-400" />
+                  <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300">Editor</span>
+                  <select
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value)}
+                    className="ml-1 px-2 py-0.5 rounded text-xs bg-zinc-200 dark:bg-dark-600 text-zinc-600 dark:text-zinc-300 border-0 outline-none cursor-pointer hover:bg-zinc-300 dark:hover:bg-dark-500 transition-colors"
+                  >
+                    {LANGUAGES.map((l) => (
+                      <option key={l.value} value={l.value}>{l.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  onClick={() => setCode(challenge.codeTemplate ?? '// Escribe tu solución aquí\n')}
+                  className="flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
                 >
-                  {code || ' '}
-                </SyntaxHighlighter>
+                  <RotateCcw size={12} />
+                  Reiniciar
+                </button>
               </div>
 
-              {/* Editable textarea (transparent text, visible caret) */}
-              <textarea
-                ref={codeRef}
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                onScroll={syncEditorScroll}
-                onKeyDown={handleCodeKeyDown}
-                spellCheck={false}
-                autoCapitalize="off"
-                autoCorrect="off"
-                className="absolute inset-0 w-full h-full resize-none border-0 outline-none overflow-auto"
-                style={{
-                  fontFamily: MONO_FONT,
-                  fontSize: CODE_SIZE,
-                  lineHeight: CODE_LINE_H,
-                  padding: CODE_PAD,
-                  color: 'transparent',
-                  caretColor: isDark ? '#e5e7eb' : '#1f2937',
-                  background: 'transparent',
-                  whiteSpace: 'pre',
-                  overflowWrap: 'normal',
-                  zIndex: 1,
-                }}
-              />
-            </div>
-          </div>
+              {/* Editor area */}
+              <div
+                className="flex flex-1 overflow-hidden"
+                style={{ backgroundColor: editorBg, fontFamily: MONO_FONT, fontSize: CODE_SIZE }}
+              >
+                <div
+                  ref={lineNumsRef}
+                  className="select-none overflow-hidden shrink-0 w-11 py-3 pr-3 text-right text-xs leading-5 bg-zinc-100 dark:bg-dark-800 border-r border-zinc-200 dark:border-dark-600 text-zinc-400 dark:text-zinc-600"
+                  style={{ lineHeight: CODE_LINE_H }}
+                  aria-hidden
+                >
+                  {Array.from({ length: lineCount }, (_, i) => (
+                    <div key={i}>{i + 1}</div>
+                  ))}
+                </div>
+                <div className="relative flex-1 overflow-hidden">
+                  <div
+                    ref={hlWrapperRef}
+                    className="absolute inset-0 overflow-hidden pointer-events-none"
+                  >
+                    <SyntaxHighlighter
+                      language={language}
+                      style={hlStyle}
+                      showLineNumbers={false}
+                      customStyle={{
+                        margin: 0, padding: CODE_PAD, fontSize: CODE_SIZE,
+                        lineHeight: CODE_LINE_H, fontFamily: MONO_FONT,
+                        background: 'transparent', overflow: 'visible',
+                        whiteSpace: 'pre', minWidth: '100%',
+                      }}
+                      codeTagProps={{ style: { fontFamily: MONO_FONT, fontSize: CODE_SIZE, lineHeight: CODE_LINE_H } }}
+                    >
+                      {code || ' '}
+                    </SyntaxHighlighter>
+                  </div>
+                  <textarea
+                    ref={codeRef}
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    onScroll={syncEditorScroll}
+                    onKeyDown={handleCodeKeyDown}
+                    spellCheck={false}
+                    autoCapitalize="off"
+                    autoCorrect="off"
+                    className="absolute inset-0 w-full h-full resize-none border-0 outline-none overflow-auto"
+                    style={{
+                      fontFamily: MONO_FONT, fontSize: CODE_SIZE, lineHeight: CODE_LINE_H,
+                      padding: CODE_PAD, color: 'transparent',
+                      caretColor: isDark ? '#e5e7eb' : '#1f2937',
+                      background: 'transparent', whiteSpace: 'pre',
+                      overflowWrap: 'normal', zIndex: 1,
+                    }}
+                  />
+                </div>
+              </div>
 
-          {/* Footer: submit button */}
-          <div className="shrink-0 flex items-center justify-between px-4 py-2.5 border-t border-zinc-200 dark:border-dark-600 bg-white dark:bg-dark-800">
-            <span className="text-xs text-zinc-400">
-              {lineCount} {lineCount === 1 ? 'línea' : 'líneas'}
-            </span>
-            <button
-              onClick={handleSubmit}
-              disabled={isSubmitting || !code.trim()}
-              className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting
-                ? <Spinner size={14} />
-                : <SendHorizonal size={14} />}
-              {isSubmitting ? 'Enviando…' : 'Entregar solución'}
-            </button>
-          </div>
+              {/* Footer: submit */}
+              <div className="shrink-0 flex items-center justify-between px-4 py-2.5 border-t border-zinc-200 dark:border-dark-600 bg-white dark:bg-dark-800">
+                <span className="text-xs text-zinc-400">
+                  {lineCount} {lineCount === 1 ? 'línea' : 'líneas'}
+                </span>
+                <button
+                  onClick={handleSubmit}
+                  disabled={isSubmitting || !code.trim()}
+                  className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? <Spinner size={14} /> : <SendHorizonal size={14} />}
+                  {isSubmitting ? 'Enviando…' : 'Entregar solución'}
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         {/* ════ RIGHT: Chatbot ════════════════════════════════════ */}

@@ -140,12 +140,14 @@ async def delete_challenge(
         db=db,
     )
 
+
 @app.get("/api/submissions/me", tags=["Submissions"])
 async def get_submissions_by_user(
     user: _user.User = Depends(_userServices.get_current_user),
     db: _orm.Session = Depends(_databaseServices.get_db),
 ):
     return await _submissionServices.get_submissions_by_user(user, db)
+
 
 @app.get("/api/submissions/{challenge_id}", tags=["Submissions"])
 async def get_submissions_by_challenge_id(
@@ -191,5 +193,33 @@ async def create_submission(
         user=user,
         challenge_id=challenge_id,
         code=code,
+        db=db,
+    )
+
+
+@app.put("/api/submissions/{submission_id}", tags=["Submissions"])
+async def update_submission(
+    submission_id: str,
+    code: Optional[str] = Form(None),
+    user: _user.User = Depends(_userServices.get_current_user),
+    db: _orm.Session = Depends(_databaseServices.get_db),
+):
+    return await _submissionServices.update_submission(
+        user=user,
+        submission_id=submission_id,
+        code=code,
+        db=db,
+    )
+
+
+@app.delete("/api/submissions/{submission_id}", tags=["Submissions"])
+async def delete_submission(
+    submission_id: str,
+    user: _user.User = Depends(_userServices.get_current_user),
+    db: _orm.Session = Depends(_databaseServices.get_db),
+):
+    return await _submissionServices.delete_submission(
+        user=user,
+        submission_id=submission_id,
         db=db,
     )

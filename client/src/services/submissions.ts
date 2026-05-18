@@ -64,6 +64,10 @@ export async function getMine(): Promise<Solution[]> {
   }));
 }
 
+export async function remove(submissionId: string): Promise<void> {
+  await http.delete<void>(`/submissions/${submissionId}`);
+}
+
 export async function accept(submissionId: string): Promise<void> {
   await http.post<void>(`/submissions/${submissionId}/accept`, {});
 }

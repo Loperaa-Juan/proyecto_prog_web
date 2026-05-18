@@ -1,3 +1,5 @@
+from typing import Optional
+
 import sqlalchemy.orm as _orm
 from fastapi import HTTPException
 
@@ -114,3 +116,54 @@ async def get_submissions_by_user(
         }
         for s in submissions
     ]
+
+
+async def update_submission(
+    user: User,
+    submission_id: str,
+    code: Optional[str],
+    db: _orm.Session,
+):
+    submission = (
+        db.query(Submission).filter(Submission.Submissionid == submission_id).first()
+    )
+    if not submission:
+        raise HTTPException(status_code=404, detail="Submission not found")
+
+    if submission.user_id != user.Userid:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    if code is not None:
+        submission.code_submitted = code
+
+    submission.status = "pending"
+
+    db.commit()
+    db.refresh(submission)
+    return {
+        "Submissionid": str(submission.Submissionid),
+        "challenge_id": str(submission.challenge_id),
+        "code_submitted": submission.code_submitted,
+        "status": submission.status,
+        "created_at": submission.created_at.isoformat()
+        if submission.created_at
+        else None,
+    }
+
+async def delete_submission(
+    user: User,
+    submission_id: str,
+    db: _orm.Session,
+):
+    submission = (
+        db.query(Submission).filter(Submission.Submissionid == submission_id).first()
+    )
+    if not submission:
+        raise HTTPException(status_code=404, detail="Submission not found")
+
+    if submission.user_id != user.Userid:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    db.delete(submission)
+    db.commit()
+    return {"detail": "Submission deleted successfully"}

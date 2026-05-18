@@ -12,13 +12,14 @@
 
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Code2, Trophy, Flame, Activity } from 'lucide-react';
+import { Plus, Code2, Trophy, Flame, Activity, Edit, Trash2 } from 'lucide-react';
 import { Avatar } from '@/components/domain/Avatar';
 import { StatCard } from '@/components/domain/StatCard';
 import { ProgressBar } from '@/components/domain/ProgressBar';
 import { NotificationItem } from '@/components/domain/NotificationItem';
 import { DashChallengeItem } from '@/components/domain/DashChallengeItem';
 import { DeleteChallengeModal } from '@/components/domain/DeleteChallengeModal';
+import { DeleteSubmissionModal } from '@/components/domain/DeleteSubmissionModal';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { Spinner } from '@/components/feedback/Spinner';
 import { DecorativeBlobs } from '@/components/branding/DecorativeBlobs';
@@ -36,8 +37,15 @@ const SUBMISSION_STATUS: Record<SolutionStatus, { dot: string; text: string; lab
   rejected: { dot: 'bg-rose-400',    text: 'text-rose-600 dark:text-rose-400',       label: 'Rechazada' },
 };
 
-function MySubmissionItem({ submission }: { submission: Solution }) {
+function MySubmissionItem({
+  submission,
+  onDelete,
+}: {
+  submission: Solution;
+  onDelete: (submission: Solution) => void;
+}) {
   const cfg = SUBMISSION_STATUS[submission.status] ?? SUBMISSION_STATUS.pending;
+
   return (
     <article className="flex items-center gap-3 py-3 border-b border-zinc-100 dark:border-dark-600 last:border-0">
       <div className="flex-1 min-w-0">
@@ -52,6 +60,21 @@ function MySubmissionItem({ submission }: { submission: Solution }) {
         <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
         {cfg.label}
       </span>
+      <Link
+        to={`/challenges/${submission.challengeId}/solve`}
+        state={{ initialCode: submission.code }}
+        aria-label="Editar submission"
+        className="w-7 h-7 flex items-center justify-center rounded-lg text-zinc-400 hover:text-primary-400 hover:bg-primary-500/10 transition-colors shrink-0"
+      >
+        <Edit size={14} />
+      </Link>
+      <button
+        onClick={() => onDelete(submission)}
+        aria-label="Eliminar submission"
+        className="w-7 h-7 flex items-center justify-center rounded-lg text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors shrink-0"
+      >
+        <Trash2 size={14} />
+      </button>
     </article>
   );
 }
@@ -70,6 +93,8 @@ export default function DashboardPage() {
 
   /** Desafío seleccionado para confirmar eliminación */
   const [toDelete, setToDelete] = useState<Challenge | null>(null);
+  /** Submission seleccionada para confirmar eliminación */
+  const [toDeleteSubmission, setToDeleteSubmission] = useState<Solution | null>(null);
 
   // Carga todos los datos del dashboard en paralelo
   useEffect(() => {
@@ -193,7 +218,11 @@ export default function DashboardPage() {
               ) : (
                 <div>
                   {mySubmissions.map((s) => (
-                    <MySubmissionItem key={s.id} submission={s} />
+                    <MySubmissionItem
+                      key={s.id}
+                      submission={s}
+                      onDelete={setToDeleteSubmission}
+                    />
                   ))}
                 </div>
               )}
@@ -229,11 +258,21 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Modal de confirmación de eliminación */}
+      {/* Modal de confirmación de eliminación de desafío */}
       <DeleteChallengeModal
         challenge={toDelete}
         onClose={() => setToDelete(null)}
         onConfirm={handleDeleted}
+      />
+
+      {/* Modal de confirmación de eliminación de submission */}
+      <DeleteSubmissionModal
+        submission={toDeleteSubmission}
+        onClose={() => setToDeleteSubmission(null)}
+        onDeleted={(id) => {
+          setMySubmissions((prev) => prev.filter((x) => x.id !== id));
+          setToDeleteSubmission(null);
+        }}
       />
     </div>
   );
