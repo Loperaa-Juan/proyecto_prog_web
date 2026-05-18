@@ -185,7 +185,7 @@ export default function SolvePage() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [challenge, code, isSubmitting, showToast]);
+  }, [challenge, code, isSubmitting, showToast, navigate]);
 
   /* chat send */
   const handleSend = useCallback(() => {
