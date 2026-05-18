@@ -140,6 +140,12 @@ async def delete_challenge(
         db=db,
     )
 
+@app.get("/api/submissions/me", tags=["Submissions"])
+async def get_submissions_by_user(
+    user: _user.User = Depends(_userServices.get_current_user),
+    db: _orm.Session = Depends(_databaseServices.get_db),
+):
+    return await _submissionServices.get_submissions_by_user(user, db)
 
 @app.get("/api/submissions/{challenge_id}", tags=["Submissions"])
 async def get_submissions_by_challenge_id(

@@ -26,7 +26,35 @@ import { GridPattern } from '@/components/branding/GridPattern';
 import { useAuth } from '@/hooks/useAuth';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import * as dashService from '@/services/dashboard';
-import type { DashboardStats, ProgressItem, Notification, Challenge } from '@/types';
+import * as submissionService from '@/services/submissions';
+import { formatRelativeDate } from '@/lib/format';
+import type { DashboardStats, ProgressItem, Notification, Challenge, Solution, SolutionStatus } from '@/types';
+
+const SUBMISSION_STATUS: Record<SolutionStatus, { dot: string; text: string; label: string }> = {
+  pending:  { dot: 'bg-amber-400',   text: 'text-amber-600 dark:text-amber-400',     label: 'Pendiente' },
+  approved: { dot: 'bg-emerald-400', text: 'text-emerald-600 dark:text-emerald-400', label: 'Aceptada'  },
+  rejected: { dot: 'bg-rose-400',    text: 'text-rose-600 dark:text-rose-400',       label: 'Rechazada' },
+};
+
+function MySubmissionItem({ submission }: { submission: Solution }) {
+  const cfg = SUBMISSION_STATUS[submission.status] ?? SUBMISSION_STATUS.pending;
+  return (
+    <article className="flex items-center gap-3 py-3 border-b border-zinc-100 dark:border-dark-600 last:border-0">
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200 truncate">
+          {submission.challengeTitle ?? 'Desafío'}
+        </p>
+        <p className="text-xs text-zinc-400 mt-0.5">
+          Enviado {formatRelativeDate(submission.submittedAt)}
+        </p>
+      </div>
+      <span className={`flex items-center gap-1.5 text-xs font-medium shrink-0 ${cfg.text}`}>
+        <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
+        {cfg.label}
+      </span>
+    </article>
+  );
+}
 
 export default function DashboardPage() {
   useDocumentTitle('Dashboard');
@@ -35,7 +63,7 @@ export default function DashboardPage() {
 
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [myChallenges, setMyChallenges] = useState<Challenge[]>([]);
-  const [solved, setSolved] = useState<Challenge[]>([]);
+  const [mySubmissions, setMySubmissions] = useState<Solution[]>([]);
   const [progress, setProgress] = useState<ProgressItem[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,14 +77,14 @@ export default function DashboardPage() {
     Promise.all([
       dashService.getStats(),
       dashService.getDashboardChallenges(),
-      dashService.getSolvedChallenges(),
+      submissionService.getMine(),
       dashService.getProgress(),
       dashService.getNotifications(),
     ])
-      .then(([s, mc, sv, pr, nt]) => {
+      .then(([s, mc, subs, pr, nt]) => {
         setStats(s);
         setMyChallenges(mc);
-        setSolved(sv);
+        setMySubmissions(subs);
         setProgress(pr);
         setNotifications(nt);
       })
@@ -112,7 +140,7 @@ export default function DashboardPage() {
         {stats && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <StatCard icon={<Code2 size={22} />}  label="Creados"      value={myChallenges.length}     color="primary" />
-            <StatCard icon={<Trophy size={22} />}  label="Resueltos"    value={stats.solved}            color="accent"  />
+            <StatCard icon={<Trophy size={22} />}  label="Enviadas"     value={mySubmissions.length}    color="accent"  />
             <StatCard icon={<Flame size={22} />}   label="Días seguidos" value={stats.currentStreak}   color="violet"  />
             <StatCard icon={<Activity size={22} />} label="Interacciones" value={stats.interactions}   color="amber"   />
           </div>
@@ -149,23 +177,23 @@ export default function DashboardPage() {
               )}
             </div>
 
-            {/* Desafíos Resueltos */}
+            {/* Mis Submissions */}
             <div className="bg-white dark:bg-dark-800 rounded-2xl border border-zinc-200 dark:border-dark-600 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-semibold text-zinc-900 dark:text-white">Resueltos</h2>
-                <span className="text-xs text-zinc-400">{solved.length} total</span>
+                <h2 className="font-semibold text-zinc-900 dark:text-white">Mis Submissions</h2>
+                <span className="text-xs text-zinc-400">{mySubmissions.length} total</span>
               </div>
-              {solved.length === 0 ? (
+              {mySubmissions.length === 0 ? (
                 <EmptyState
                   icon={<Trophy size={36} />}
-                  title="Aún sin resolver"
-                  description="Explora los desafíos y resuelve tus primeros problemas."
-                  action={{ label: 'Explorar desafíos', onClick: () => {} }}
+                  title="Sin submissions"
+                  description="Explora los desafíos y envía tu primera solución."
+                  action={{ label: 'Explorar desafíos', onClick: () => navigate('/challenges') }}
                 />
               ) : (
                 <div>
-                  {solved.map((c) => (
-                    <DashChallengeItem key={c.id} challenge={c} variant="solved" />
+                  {mySubmissions.map((s) => (
+                    <MySubmissionItem key={s.id} submission={s} />
                   ))}
                 </div>
               )}

@@ -9,6 +9,7 @@ export type SolutionStatus = 'pending' | 'approved' | 'rejected';
 export interface Solution {
   id: string;
   challengeId: string;
+  challengeTitle?: string;
   authorId: string;
   authorName?: string;
   code: string;

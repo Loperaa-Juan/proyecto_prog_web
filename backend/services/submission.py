@@ -90,3 +90,27 @@ async def update_submission_status(
     db.commit()
     db.refresh(submission)
     return {"Submissionid": str(submission.Submissionid), "status": submission.status}
+
+
+async def get_submissions_by_user(
+    user: User,
+    db: _orm.Session,
+):
+    submissions = (
+        db.query(Submission)
+        .options(_orm.joinedload(Submission.challenge))
+        .filter(Submission.user_id == user.Userid)
+        .all()
+    )
+
+    return [
+        {
+            "Submissionid": str(s.Submissionid),
+            "challenge_id": str(s.challenge_id),
+            "challenge_title": s.challenge.title if s.challenge else None,
+            "code_submitted": s.code_submitted,
+            "status": s.status,
+            "created_at": s.created_at.isoformat() if s.created_at else None,
+        }
+        for s in submissions
+    ]
