@@ -20,7 +20,8 @@ load_dotenv()
 # Crea el contexto para hashing con bcrypt
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-OAuth2_scheme = _security.OAuth2PasswordBearer("/api/token")
+OAuth2_scheme = _security.OAuth2PasswordBearer("/api/auth/token")
+
 
 JWT_SECRET = os.getenv("JWT_SECRET")
 ALGORITHM = os.getenv("HASHING_ALGORITHM")

@@ -42,6 +42,7 @@ async def get_submissions_by_challenge_id(
         db.query(Challenge).filter(Challenge.Challengeid == challenge_id).first()
     )
 
+    # Solo el creador del desafío puede ver las entregas
     if user.Userid != challenge_db.Userid:
         raise HTTPException(
             status_code=403, detail="Not authorized to view submissions"
@@ -136,6 +137,7 @@ async def update_submission(
     if code is not None:
         submission.code_submitted = code
 
+    # En caso de actualizar el código, se restablece el estado a "pending" para que vuelva a ser evaluado
     status_enum = Submission.status.property.columns[0].type.enum_class
     submission.status = status_enum("pending")
 
@@ -151,6 +153,7 @@ async def update_submission(
         else None,
     }
 
+
 async def delete_submission(
     user: User,
     submission_id: str,
@@ -162,6 +165,7 @@ async def delete_submission(
     if not submission:
         raise HTTPException(status_code=404, detail="Submission not found")
 
+    # Solo el autor de la entrega puede eliminarla
     if submission.user_id != user.Userid:
         raise HTTPException(status_code=403, detail="Not authorized")
 
