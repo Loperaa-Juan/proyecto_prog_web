@@ -112,7 +112,7 @@ export async function list(
 }
 
 export async function getById(id: string): Promise<Challenge> {
-  const data = await http.get<BackendChallenge>(`/challenge/${id}`);
+  const data = await http.get<BackendChallenge>(`/challenges/${id}`);
   return mapBackendChallenge(data);
 }
 
@@ -160,7 +160,7 @@ export async function update(
   form.append("difficulty", payload.difficulty);
   payload.tags.forEach((tag) => form.append("tags", tag));
 
-  const data = await http.putForm<BackendChallenge>(`/challenge/${id}`, form);
+  const data = await http.putForm<BackendChallenge>(`/challenges/${id}`, form);
 
   const cat = payload.category ?? "arrays";
   return {
