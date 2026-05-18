@@ -12,6 +12,7 @@ from services import database as _databaseServices
 router = APIRouter(prefix="/challenges", tags=["Challenges"])
 
 
+# Ruta para obtener los desafíos creados por el usuario autenticado
 @router.get("/me")
 async def get_challenges_by_user(
     user: _user.User = Depends(_userServices.get_current_user),
@@ -20,11 +21,13 @@ async def get_challenges_by_user(
     return await _challengeServices.get_challenges_by_user(user, db)
 
 
+# Ruta para obtener todos los desafíos disponibles
 @router.get("/")
 async def get_all_challenges(db: _orm.Session = Depends(_databaseServices.get_db)):
     return await _challengeServices.get_all_challenges(db)
 
 
+# Ruta para obtener un desafío específico por su ID
 @router.get("/{challenge_id}")
 async def get_challenge_by_id(
     challenge_id: str,
@@ -34,6 +37,7 @@ async def get_challenge_by_id(
     return await _challengeServices.get_challenge_by_id(challenge_id, db, user)
 
 
+# Ruta para crear un nuevo desafío
 @router.post("/")
 async def create_challenge(
     title: str = Form(...),
@@ -48,6 +52,7 @@ async def create_challenge(
     )
 
 
+# Ruta para actualizar un desafío existente
 @router.put("/{challenge_id}")
 async def update_challenge(
     challenge_id: str,
@@ -69,6 +74,7 @@ async def update_challenge(
     )
 
 
+# Ruta para eliminar un desafío
 @router.delete("/{challenge_id}")
 async def delete_challenge(
     challenge_id: str,

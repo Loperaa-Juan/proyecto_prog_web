@@ -8,11 +8,13 @@ from services import database as _databaseServices
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
+# Endpoint para obtener el usuario actual
 @router.get("/me", response_model=_user.UserResponse)
 async def get_user(user: _user.User = Depends(_userServices.get_current_user)):
     return user
 
 
+# Endpoint para crear un nuevo usuario
 @router.post("/")
 async def create_user(
     user: _user.UserCreate, db: _orm.Session = Depends(_databaseServices.get_db)
