@@ -5,9 +5,11 @@ import pydantic as _pydantic
 
 
 class SubmissionBase(_pydantic.BaseModel):
-    Userid: _uuid.UUID
-    Challengeid: _uuid.UUID
+    user_id: _uuid.UUID = _pydantic.Field(alias="Userid")
+    challenge_id: _uuid.UUID = _pydantic.Field(alias="Challengeid")
     code_submitted: str
+
+    model_config = _pydantic.ConfigDict(populate_by_name=True)
 
 
 class SubmissionCreate(SubmissionBase):
@@ -15,8 +17,8 @@ class SubmissionCreate(SubmissionBase):
 
 
 class Submission(SubmissionBase):
-    Submissionid: _uuid.UUID
+    submission_id: _uuid.UUID = _pydantic.Field(alias="Submissionid")
     created_at: _dt.datetime
     status: str
 
-    model_config = _pydantic.ConfigDict(from_attributes=True)
+    model_config = _pydantic.ConfigDict(from_attributes=True, populate_by_name=True)
