@@ -11,7 +11,7 @@
  */
 
 import { Link } from 'react-router-dom';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, Users } from 'lucide-react';
 import { DifficultyBadge } from '@/components/feedback/Badge';
 import { formatRelativeDate } from '@/lib/format';
 import type { Challenge } from '@/types';
@@ -51,6 +51,13 @@ export function DashChallengeItem({
       {/* Acciones */}
       {variant === 'own' && (
         <div className="flex items-center gap-1 shrink-0">
+          <Link
+            to={`/challenges/${challenge.id}/submissions`}
+            aria-label={`Ver submissions de ${challenge.title}`}
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-zinc-400 hover:text-primary-400 hover:bg-primary-500/10 transition-colors"
+          >
+            <Users size={15} />
+          </Link>
           <Link
             to={`/challenges/${challenge.id}/edit`}
             aria-label={`Editar ${challenge.title}`}

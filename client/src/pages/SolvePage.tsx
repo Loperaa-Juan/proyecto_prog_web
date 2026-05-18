@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/useToast';
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/classNames';
 import * as challengeService from '@/services/challenges';
+import * as submissionService from '@/services/submissions';
 import type { Challenge } from '@/types';
 
 /* ── Constants ──────────────────────────────────────────────────── */
@@ -167,12 +168,18 @@ export default function SolvePage() {
 
   /* submit solution */
   const handleSubmit = useCallback(async () => {
-    if (isSubmitting || !code.trim()) return;
+    if (isSubmitting || !code.trim() || !challenge) return;
     setIsSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    showToast('Solución enviada correctamente', 'success');
-    setIsSubmitting(false);
-  }, [code, isSubmitting, showToast]);
+    try {
+      await submissionService.create(challenge.id, code);
+      showToast('Solución enviada correctamente', 'success');
+      navigate('/challenges');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Error al enviar la solución', 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [challenge, code, isSubmitting, showToast]);
 
   /* chat send */
   const handleSend = useCallback(() => {

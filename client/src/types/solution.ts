@@ -10,6 +10,7 @@ export interface Solution {
   id: string;
   challengeId: string;
   authorId: string;
+  authorName?: string;
   code: string;
   status: SolutionStatus;
   feedback?: string;

@@ -27,6 +27,8 @@ const ChallengesPage   = lazy(() => import('@/pages/ChallengesPage'));
 const DashboardPage    = lazy(() => import('@/pages/DashboardPage'));
 const ChallengeFormPage = lazy(() => import('@/pages/ChallengeFormPage'));
 const SolvePage        = lazy(() => import('@/pages/SolvePage'));
+const SubmissionsPage       = lazy(() => import('@/pages/SubmissionsPage'));
+const SubmissionDetailPage  = lazy(() => import('@/pages/SubmissionDetailPage'));
 const NotFoundPage     = lazy(() => import('@/pages/NotFoundPage'));
 
 /** Spinner de carga mientras se descarga el chunk de la página */
@@ -124,6 +126,34 @@ export default function App() {
                 <Navbar />
                 <main className="flex-1">
                   <ChallengeFormPage />
+                </main>
+                <MiniFooter />
+              </div>
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="/challenges/:id/submissions"
+          element={
+            <RouteGuard>
+              <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-dark-900">
+                <Navbar />
+                <main className="flex-1">
+                  <SubmissionsPage />
+                </main>
+                <MiniFooter />
+              </div>
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="/challenges/:id/submissions/:submissionId"
+          element={
+            <RouteGuard>
+              <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-dark-900">
+                <Navbar />
+                <main className="flex-1">
+                  <SubmissionDetailPage />
                 </main>
                 <MiniFooter />
               </div>
