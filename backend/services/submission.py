@@ -136,7 +136,8 @@ async def update_submission(
     if code is not None:
         submission.code_submitted = code
 
-    submission.status = "pending"
+    status_enum = Submission.status.property.columns[0].type.enum_class
+    submission.status = status_enum("pending")
 
     db.commit()
     db.refresh(submission)
