@@ -1,16 +1,15 @@
-from datetime import timedelta
 from typing import Optional
 
 # from fastapi.middleware.cors import CORSMiddleware
 import sqlalchemy.orm as _orm
-from fastapi import Depends, FastAPI, Form, HTTPException
+from fastapi import Depends, FastAPI, Form
 from fastapi.responses import RedirectResponse
-from fastapi.security import OAuth2PasswordRequestForm
 
 import schemas.user as _user
 import services.challenge as _challengeServices
 import services.user as _userServices
 from models.challenge import Difficulty
+from routers import auth_router, users_router
 from services import database as _databaseServices
 from services import submission as _submissionServices
 
@@ -32,43 +31,8 @@ def health_check():
     return {"status": "OK"}
 
 
-@app.get("/api/users/me", response_model=_user.UserResponse, tags=["Users"])
-async def get_user(user: _user.User = Depends(_userServices.get_current_user)):
-    return user
-
-
-@app.post("/api/token", tags=["Authentication"])
-async def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    db: _orm.Session = Depends(_databaseServices.get_db),
-):
-    user = await _userServices.authenticate_user(
-        form_data.username, form_data.password, db
-    )
-
-    access_token_expires = timedelta(minutes=30)
-    access_token_jwt = _userServices.create_token(
-        {"sub": user.username, "Userid": str(user.Userid)},
-        access_token_expires,
-    )
-
-    return {"access_token": access_token_jwt, "token_type": "bearer"}
-
-
-@app.post("/api/users", tags=["Users"])
-async def create_user(
-    user: _user.UserCreate, db: _orm.Session = Depends(_databaseServices.get_db)
-):
-    db_user = await _userServices.get_user_by_username(user.email, db)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already in use")
-
-    user = await _userServices.create_user(user, db)
-
-    return {
-        "message": "Usuario creado exitosamente",
-        "data": user,
-    }
+app.include_router(auth_router, prefix="/api")
+app.include_router(users_router, prefix="/api")
 
 
 @app.get("/api/challenges/me", tags=["Challenges"])
