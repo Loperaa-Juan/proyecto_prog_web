@@ -35,3 +35,11 @@ export interface AuthSession {
   token: string;
   user: User;
 }
+
+/** Payload para editar el perfil del usuario autenticado */
+export interface UpdateUserPayload {
+  username?: string;
+  fullName?: string;
+  email?: string;
+  password?: string;
+}

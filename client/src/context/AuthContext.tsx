@@ -8,7 +8,7 @@
 
 import { createContext, useCallback, useEffect, useState } from 'react';
 import * as authService from '@/services/auth';
-import type { AuthCredentials, RegisterPayload, User } from '@/types';
+import type { AuthCredentials, RegisterPayload, UpdateUserPayload, User } from '@/types';
 
 interface AuthContextValue {
   user: User | null;
@@ -26,6 +26,10 @@ interface AuthContextValue {
   register: (payload: RegisterPayload) => Promise<void>;
   /** Cierra la sesión del usuario actual. */
   logout: () => void;
+  /** Actualiza el perfil del usuario autenticado. */
+  updateUser: (payload: UpdateUserPayload) => Promise<void>;
+  /** Elimina la cuenta del usuario autenticado y cierra sesión. */
+  deleteAccount: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
@@ -81,9 +85,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   }, []);
 
+  const updateUser = useCallback(async (payload: UpdateUserPayload) => {
+    setLoading(true);
+    try {
+      const updatedUser = await authService.updateMe(payload);
+      setUser(updatedUser);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const deleteAccount = useCallback(async () => {
+    await authService.deleteMe();
+    authService.logout();
+    setUser(null);
+  }, []);
+
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated: user !== null, loading, login, register, logout }}
+      value={{ user, isAuthenticated: user !== null, loading, login, register, logout, updateUser, deleteAccount }}
     >
       {children}
     </AuthContext.Provider>
