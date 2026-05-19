@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, Check, X } from 'lucide-react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus, vs } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Spinner } from '@/components/feedback/Spinner';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+import { useTheme } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/useToast';
 import { formatRelativeDate } from '@/lib/format';
 import * as submissionService from '@/services/submissions';
@@ -21,6 +24,7 @@ export default function SubmissionDetailPage() {
   };
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { isDark } = useTheme();
 
   const [status, setStatus] = useState<SolutionStatus>(state?.submission.status ?? 'pending');
   const [accepting, setAccepting] = useState(false);
@@ -116,9 +120,26 @@ export default function SubmissionDetailPage() {
           <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide mb-3">
             Código enviado
           </p>
-          <pre className="rounded-xl p-4 text-xs font-mono leading-5 overflow-x-auto bg-[#1e1e1e] text-zinc-200 max-h-[28rem] whitespace-pre">
-            {submission.code}
-          </pre>
+          <div className="rounded-xl overflow-hidden">
+            <SyntaxHighlighter
+              language="javascript"
+              style={isDark ? vscDarkPlus : vs}
+              showLineNumbers
+              customStyle={{
+                margin: 0,
+                padding: '1rem',
+                fontSize: '0.75rem',
+                lineHeight: '1.25rem',
+                maxHeight: '28rem',
+                fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+              }}
+              codeTagProps={{
+                style: { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' },
+              }}
+            >
+              {submission.code}
+            </SyntaxHighlighter>
+          </div>
         </div>
 
         {/* Acciones */}
