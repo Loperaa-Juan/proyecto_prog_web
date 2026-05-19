@@ -125,7 +125,6 @@ async def edit_user_profile(
     password: Optional[str] = None,
     db: _orm.Session = Depends(get_db),
 ):
-    # user_db = db.query(user).filter_by(u=user.Userid).first()
     user_db = db.query(_User).filter_by(Userid=user.Userid).first()
 
     if user.Userid != user_db.Userid:
@@ -150,3 +149,16 @@ async def edit_user_profile(
             "email": user_db.email,
         }
     }
+
+
+def delete_user(user: _User, db: _orm.Session):
+    user_db = db.query(_User).filter_by(Userid=user.Userid).first()
+
+    if user.Userid != user_db.Userid:
+        raise HTTPException(
+            status_code=403, detail="Unauthorized to delete this profile"
+        )
+
+    db.delete(user_db)
+    db.commit()
+    return {"message": "Usuario eliminado exitosamente"}
