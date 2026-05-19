@@ -10,9 +10,9 @@
  * - Muestras estados vacíos si no hay datos en alguna sección.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Code2, Trophy, Flame, Activity, Edit, Trash2 } from 'lucide-react';
+import { Plus, Code2, Trophy, Flame, Settings, Edit, Trash2, Pencil } from 'lucide-react';
 import { Avatar } from '@/components/domain/Avatar';
 import { StatCard } from '@/components/domain/StatCard';
 import { ProgressBar } from '@/components/domain/ProgressBar';
@@ -20,6 +20,8 @@ import { NotificationItem } from '@/components/domain/NotificationItem';
 import { DashChallengeItem } from '@/components/domain/DashChallengeItem';
 import { DeleteChallengeModal } from '@/components/domain/DeleteChallengeModal';
 import { DeleteSubmissionModal } from '@/components/domain/DeleteSubmissionModal';
+import { EditProfileModal } from '@/components/domain/EditProfileModal';
+import { DeleteAccountModal } from '@/components/domain/DeleteAccountModal';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { Spinner } from '@/components/feedback/Spinner';
 import { DecorativeBlobs } from '@/components/branding/DecorativeBlobs';
@@ -95,6 +97,21 @@ export default function DashboardPage() {
   const [toDelete, setToDelete] = useState<Challenge | null>(null);
   /** Submission seleccionada para confirmar eliminación */
   const [toDeleteSubmission, setToDeleteSubmission] = useState<Solution | null>(null);
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const settingsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!settingsOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (settingsRef.current && !settingsRef.current.contains(e.target as Node)) {
+        setSettingsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [settingsOpen]);
 
   // Carga todos los datos del dashboard en paralelo
   useEffect(() => {
@@ -135,9 +152,11 @@ export default function DashboardPage() {
   return (
     <div>
       {/* ===== HEADER ===== */}
-      <section className="relative py-12 px-4 overflow-hidden bg-zinc-50 dark:bg-dark-900 border-b border-zinc-200 dark:border-dark-600">
-        <DecorativeBlobs variant="pageHeader" />
-        <GridPattern />
+      <section className="relative py-12 px-4 bg-zinc-50 dark:bg-dark-900 border-b border-zinc-200 dark:border-dark-600">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <DecorativeBlobs variant="pageHeader" />
+          <GridPattern />
+        </div>
         <div className="relative z-10 max-w-6xl mx-auto">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
             <Avatar initials={user?.initials ?? 'U'} size="lg" />
@@ -150,12 +169,40 @@ export default function DashboardPage() {
                 {user?.joinedAt ? new Date(user.joinedAt).toLocaleDateString('es-CO', { month: 'long', year: 'numeric' }) : '—'}
               </p>
             </div>
-            <Link
-              to="/challenges/new"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-primary hover:opacity-90 transition-opacity shrink-0"
-            >
-              <Plus size={16} /> Crear Desafío
-            </Link>
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="relative" ref={settingsRef}>
+                <button
+                  onClick={() => setSettingsOpen((o) => !o)}
+                  aria-label="Opciones de cuenta"
+                  className="w-10 h-10 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-dark-500 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-dark-700 transition-colors"
+                >
+                  <Settings size={18} />
+                </button>
+                {settingsOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-dark-800 rounded-xl border border-zinc-200 dark:border-dark-600 shadow-lg py-1 z-20">
+                    <button
+                      onClick={() => { setSettingsOpen(false); setEditProfileOpen(true); }}
+                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-dark-700 transition-colors"
+                    >
+                      <Pencil size={15} /> Editar perfil
+                    </button>
+                    <hr className="border-zinc-100 dark:border-dark-600 mx-2" />
+                    <button
+                      onClick={() => { setSettingsOpen(false); setDeleteAccountOpen(true); }}
+                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors"
+                    >
+                      <Trash2 size={15} /> Eliminar cuenta
+                    </button>
+                  </div>
+                )}
+              </div>
+              <Link
+                to="/challenges/new"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-primary hover:opacity-90 transition-opacity"
+              >
+                <Plus size={16} /> Crear Desafío
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -163,11 +210,10 @@ export default function DashboardPage() {
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
         {/* ===== ESTADÍSTICAS ===== */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard icon={<Code2 size={22} />}  label="Creados"      value={myChallenges.length}     color="primary" />
-            <StatCard icon={<Trophy size={22} />}  label="Enviadas"     value={mySubmissions.length}    color="accent"  />
-            <StatCard icon={<Flame size={22} />}   label="Días seguidos" value={stats.currentStreak}   color="violet"  />
-            <StatCard icon={<Activity size={22} />} label="Interacciones" value={stats.interactions}   color="amber"   />
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <StatCard icon={<Code2 size={22} />} label="Creados"       value={myChallenges.length}  color="primary" />
+            <StatCard icon={<Trophy size={22} />} label="Enviadas"      value={mySubmissions.length} color="accent"  />
+            <StatCard icon={<Flame size={22} />}  label="Días seguidos" value={stats.currentStreak}  color="violet"  />
           </div>
         )}
 
@@ -273,6 +319,19 @@ export default function DashboardPage() {
           setMySubmissions((prev) => prev.filter((x) => x.id !== id));
           setToDeleteSubmission(null);
         }}
+      />
+
+      {/* Modal de edición de perfil */}
+      <EditProfileModal
+        isOpen={editProfileOpen}
+        onClose={() => setEditProfileOpen(false)}
+      />
+
+      {/* Modal de confirmación de eliminación de cuenta */}
+      <DeleteAccountModal
+        isOpen={deleteAccountOpen}
+        onClose={() => setDeleteAccountOpen(false)}
+        onDeleted={() => navigate('/')}
       />
     </div>
   );

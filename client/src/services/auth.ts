@@ -3,6 +3,7 @@ import type {
   AuthCredentials,
   RegisterPayload,
   AuthSession,
+  UpdateUserPayload,
   User,
 } from "@/types";
 
@@ -62,7 +63,7 @@ export async function login(
   formData.append("username", credentials.email.trim().toLowerCase());
   formData.append("password", credentials.password);
 
-  const tokenRes = await fetch(`${BASE_URL}/token`, {
+  const tokenRes = await fetch(`${BASE_URL}/auth/token`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: formData.toString(),
@@ -93,7 +94,7 @@ export async function login(
 }
 
 export async function register(payload: RegisterPayload): Promise<void> {
-  const res = await fetch(`${BASE_URL}/users`, {
+  const res = await fetch(`${BASE_URL}/users/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -127,4 +128,74 @@ export function isAuthenticated(): boolean {
 export function getCurrentUser(): User | null {
   const session = getJSON<AuthSession>(STORAGE_KEYS.USER);
   return session?.user ?? null;
+}
+
+interface UpdateUserResponse {
+  "Usuario modificado": {
+    Userid: string;
+    username: string;
+    full_name: string;
+    email: string;
+  };
+}
+
+export async function updateMe(payload: UpdateUserPayload): Promise<User> {
+  const token = getToken();
+  if (!token) throw new Error("No autenticado");
+
+  const formData = new URLSearchParams();
+  if (payload.username)
+    formData.append("username", payload.username.trim().toLowerCase());
+  if (payload.fullName) formData.append("full_name", payload.fullName.trim());
+  if (payload.email)
+    formData.append("email", payload.email.trim().toLowerCase());
+  if (payload.password) formData.append("password", payload.password);
+
+  const res = await fetch(`${BASE_URL}/users/me`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: formData.toString(),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(extractApiError(err) || "Error al actualizar el perfil");
+  }
+
+  const data: UpdateUserResponse = await res.json();
+  const updated = data["Usuario modificado"];
+  const session = getJSON<AuthSession>(STORAGE_KEYS.USER);
+  const currentUser = session?.user;
+
+  const user = buildUser({
+    Userid: updated.Userid,
+    username: updated.username,
+    full_name: updated.full_name,
+    email: updated.email,
+    streak: currentUser?.streak ?? 0,
+  });
+
+  if (currentUser?.joinedAt) user.joinedAt = currentUser.joinedAt;
+  if (currentUser?.level) user.level = currentUser.level;
+
+  if (session) setJSON(STORAGE_KEYS.USER, { ...session, user });
+  return user;
+}
+
+export async function deleteMe(): Promise<void> {
+  const token = getToken();
+  if (!token) throw new Error("No autenticado");
+
+  const res = await fetch(`${BASE_URL}/users/me`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(extractApiError(err) || "Error al eliminar la cuenta");
+  }
 }
