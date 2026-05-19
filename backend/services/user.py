@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timedelta, timezone
-from typing import Union
+from typing import Optional, Union
 
 import fastapi.security as _security
 import sqlalchemy.orm as _orm
@@ -114,3 +114,39 @@ async def get_current_user(
         )
 
     return user
+
+
+# Función para editar el perfil del usuario
+async def edit_user_profile(
+    user: _User,
+    username: Optional[str] = None,
+    full_name: Optional[str] = None,
+    email: Optional[str] = None,
+    password: Optional[str] = None,
+    db: _orm.Session = Depends(get_db),
+):
+    # user_db = db.query(user).filter_by(u=user.Userid).first()
+    user_db = db.query(_User).filter_by(Userid=user.Userid).first()
+
+    if user.Userid != user_db.Userid:
+        raise HTTPException(status_code=403, detail="Unauthorized to edit this profile")
+
+    if username:
+        user_db.username = username
+    if full_name:
+        user_db.full_name = full_name
+    if email:
+        user_db.email = email
+    if password:
+        user_db.password_hash = pwd_context.hash(password)
+
+    db.commit()
+    db.refresh(user_db)
+    return {
+        "Usuario modificado": {
+            "Userid": user_db.Userid,
+            "username": user_db.username,
+            "full_name": user_db.full_name,
+            "email": user_db.email,
+        }
+    }
