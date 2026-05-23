@@ -1,11 +1,5 @@
 [
   {
-    "id": 5,
-    "nombre": "Silla gamer",
-    "precio": 350000,
-    "disponible": true
-  },
-  {
     "id": 6,
     "nombre": "Tarjeta grafica",
     "precio": 2000000,
