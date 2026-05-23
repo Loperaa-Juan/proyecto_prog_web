@@ -1,30 +1,30 @@
 const API = "/api/productos";
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
-const tbody          = document.getElementById("inventory-body");
-const emptyRow       = document.getElementById("empty-row");
+const tbody = document.getElementById("inventory-body");
+const emptyRow = document.getElementById("empty-row");
 const paginationInfo = document.getElementById("pagination-info");
-const modal          = document.getElementById("productModal");
-const deleteModal        = document.getElementById("deleteModal");
-const deleteProductName  = document.getElementById("delete-product-name");
-const confirmDeleteBtn   = document.getElementById("confirm-delete-btn");
-const form           = document.getElementById("product-form");
-const nameInput      = document.getElementById("product_name");
-const priceInput     = document.getElementById("product_price");
-const nameError      = document.getElementById("name-error");
-const nameErrorMsg   = document.getElementById("name-error-msg");
-const priceError     = document.getElementById("price-error");
-const priceErrorMsg  = document.getElementById("price-error-msg");
-const formError      = document.getElementById("form-error");
-const formErrorMsg   = document.getElementById("form-error-msg");
-const submitBtn      = document.getElementById("submit-btn");
-const searchInput    = document.getElementById("search-input");
-const cardTotal      = document.getElementById("card-total");
-const cardAvailable  = document.getElementById("card-available");
+const modal = document.getElementById("productModal");
+const deleteModal = document.getElementById("deleteModal");
+const deleteProductName = document.getElementById("delete-product-name");
+const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
+const form = document.getElementById("product-form");
+const nameInput = document.getElementById("product_name");
+const priceInput = document.getElementById("product_price");
+const nameError = document.getElementById("name-error");
+const nameErrorMsg = document.getElementById("name-error-msg");
+const priceError = document.getElementById("price-error");
+const priceErrorMsg = document.getElementById("price-error-msg");
+const formError = document.getElementById("form-error");
+const formErrorMsg = document.getElementById("form-error-msg");
+const submitBtn = document.getElementById("submit-btn");
+const searchInput = document.getElementById("search-input");
+const cardTotal = document.getElementById("card-total");
+const cardAvailable = document.getElementById("card-available");
 const cardUnavailable = document.getElementById("card-unavailable");
 
 // ── Estado local ──────────────────────────────────────────────────────────────
-let allProductos = [];   // lista completa traída del servidor
+let allProductos = []; // lista completa traída del servidor
 
 // ── API helper ────────────────────────────────────────────────────────────────
 async function apiFetch(url, options = {}) {
@@ -45,13 +45,17 @@ function formatPrice(precio) {
 }
 
 function buildRow(p) {
-  const toggleIcon  = p.disponible ? "toggle_on"  : "toggle_off";
+  const toggleIcon = p.disponible ? "toggle_on" : "toggle_off";
   const toggleColor = p.disponible
     ? "text-green-600 hover:text-amber-500"
     : "text-on-surface-variant hover:text-green-600";
-  const toggleTitle = p.disponible ? "Marcar como no disponible" : "Marcar como disponible";
-  const statusBar   = p.disponible ? "status-bar-available" : "status-bar-unavailable";
-  const chip        = p.disponible
+  const toggleTitle = p.disponible
+    ? "Marcar como no disponible"
+    : "Marcar como disponible";
+  const statusBar = p.disponible
+    ? "status-bar-available"
+    : "status-bar-unavailable";
+  const chip = p.disponible
     ? `<span class="status-chip status-available">Disponible</span>`
     : `<span class="status-chip status-unavailable">No disponible</span>`;
 
@@ -90,18 +94,18 @@ function buildRow(p) {
 
 // ── Tarjetas de resumen ───────────────────────────────────────────────────────
 function updateCards() {
-  const total       = allProductos.length;
-  const available   = allProductos.filter(p => p.disponible).length;
+  const total = allProductos.length;
+  const available = allProductos.filter((p) => p.disponible).length;
   const unavailable = total - available;
 
-  cardTotal.textContent       = total;
-  cardAvailable.textContent   = available;
+  cardTotal.textContent = total;
+  cardAvailable.textContent = available;
   cardUnavailable.textContent = unavailable;
 }
 
 // ── Renderizar filas (acepta subconjunto para búsqueda) ───────────────────────
 function renderRows(lista) {
-  tbody.querySelectorAll("tr:not(#empty-row)").forEach(r => r.remove());
+  tbody.querySelectorAll("tr:not(#empty-row)").forEach((r) => r.remove());
 
   if (lista.length === 0) {
     emptyRow.classList.remove("hidden");
@@ -118,9 +122,9 @@ function renderRows(lista) {
 // ── GET: cargar datos del servidor ────────────────────────────────────────────
 async function renderTable() {
   try {
-    allProductos = await apiFetch(API) ?? [];
+    allProductos = (await apiFetch(API)) ?? [];
     updateCards();
-    applySearch();          // respeta el término que ya haya en el buscador
+    applySearch(); // respeta el término que ya haya en el buscador
   } catch (err) {
     console.error("renderTable:", err);
   }
@@ -133,8 +137,8 @@ function applySearch() {
     renderRows(allProductos);
     return;
   }
-  const filtered = allProductos.filter(p =>
-    p.nombre.toLowerCase().includes(term)
+  const filtered = allProductos.filter((p) =>
+    p.nombre.toLowerCase().includes(term),
   );
   renderRows(filtered);
 }
@@ -146,8 +150,8 @@ async function toggleDisponible(id) {
   const row = tbody.querySelector(`tr[data-id="${id}"]`);
   if (!row) return;
 
-  const nombre     = decodeURIComponent(row.dataset.nombre);
-  const precio     = parseFloat(row.dataset.precio);
+  const nombre = decodeURIComponent(row.dataset.nombre);
+  const precio = parseFloat(row.dataset.precio);
   const disponible = row.dataset.disponible === "true";
 
   try {
@@ -212,7 +216,7 @@ function clearFieldError(errorEl, inputEl) {
 }
 
 function clearErrors() {
-  clearFieldError(nameError,  nameInput);
+  clearFieldError(nameError, nameInput);
   clearFieldError(priceError, priceInput);
   formError.classList.add("hidden");
 }
@@ -230,7 +234,11 @@ function validateForm() {
 
   const precio = priceInput.value;
   if (precio === "" || isNaN(Number(precio)) || Number(precio) < 0) {
-    showFieldError(priceError, priceErrorMsg, "Ingresa un precio válido (número ≥ 0).");
+    showFieldError(
+      priceError,
+      priceErrorMsg,
+      "Ingresa un precio válido (número ≥ 0).",
+    );
     priceInput.classList.add("border-error");
     valid = false;
   } else {
@@ -240,8 +248,12 @@ function validateForm() {
   return valid;
 }
 
-nameInput.addEventListener("input",  () => clearFieldError(nameError,  nameInput));
-priceInput.addEventListener("input", () => clearFieldError(priceError, priceInput));
+nameInput.addEventListener("input", () =>
+  clearFieldError(nameError, nameInput),
+);
+priceInput.addEventListener("input", () =>
+  clearFieldError(priceError, priceInput),
+);
 
 // ── POST: crear producto ──────────────────────────────────────────────────────
 form.addEventListener("submit", async (e) => {
@@ -253,7 +265,7 @@ form.addEventListener("submit", async (e) => {
   const nombre = nameInput.value.trim();
   const precio = Number(priceInput.value);
 
-  submitBtn.disabled    = true;
+  submitBtn.disabled = true;
   submitBtn.textContent = "Guardando...";
 
   try {
@@ -269,14 +281,18 @@ form.addEventListener("submit", async (e) => {
     formError.classList.remove("hidden");
     console.error("createProducto:", err);
   } finally {
-    submitBtn.disabled    = false;
+    submitBtn.disabled = false;
     submitBtn.textContent = "Agregar";
   }
 });
 
 // ── Cerrar modales al clic en el backdrop ────────────────────────────────────
-modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
-deleteModal.addEventListener("click", (e) => { if (e.target === deleteModal) closeDeleteModal(); });
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) closeModal();
+});
+deleteModal.addEventListener("click", (e) => {
+  if (e.target === deleteModal) closeDeleteModal();
+});
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 renderTable();
