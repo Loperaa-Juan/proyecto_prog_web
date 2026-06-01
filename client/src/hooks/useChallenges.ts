@@ -49,10 +49,10 @@ export function useChallenges(): UseChallengesReturn {
     setError(null);
 
     challengeService
-      .list()
-      .then((result) => {
+      .getAll()
+      .then((items) => {
         if (!cancelled) {
-          setAllChallenges(result.items);
+          setAllChallenges(items);
           setLoading(false);
         }
       })

@@ -66,10 +66,15 @@ function mapBackendChallenge(item: BackendChallenge): Challenge {
   };
 }
 
+export async function getAll(): Promise<Challenge[]> {
+  const raw = await http.get<BackendChallenge[]>("/challenges/");
+  return raw.map(mapBackendChallenge);
+}
+
 export async function list(
   filter: ChallengeFilter = {},
 ): Promise<Paginated<Challenge>> {
-  const raw = await http.get<BackendChallenge[]>("/challenges");
+  const raw = await http.get<BackendChallenge[]>("/challenges/");
   let items = raw.map(mapBackendChallenge);
 
   if (filter.search) {
@@ -126,7 +131,7 @@ export async function create(payload: ChallengePayload): Promise<Challenge> {
   form.append("difficulty", payload.difficulty);
   payload.tags.forEach((tag) => form.append("tags", tag));
 
-  const data = await http.postForm<BackendChallenge>("/challenges", form);
+  const data = await http.postForm<BackendChallenge>("/challenges/", form);
 
   const cat = payload.category ?? "arrays";
   return {

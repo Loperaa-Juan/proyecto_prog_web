@@ -2,19 +2,21 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import {
   ChevronRight, Send, Bot, Code2, RotateCcw,
-  ChevronDown, SendHorizonal, Check, FileText,
+  SendHorizonal, FileText, Sparkles,
 } from 'lucide-react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, vs } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { ChatMarkdown } from '@/components/chat/ChatMarkdown';
 import { Spinner } from '@/components/feedback/Spinner';
 import { DifficultyBadge } from '@/components/feedback/Badge';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { useToast } from '@/hooks/useToast';
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/classNames';
+import { getJSON, STORAGE_KEYS } from '@/lib/storage';
 import * as challengeService from '@/services/challenges';
 import * as submissionService from '@/services/submissions';
-import type { Challenge } from '@/types';
+import type { AuthSession, Challenge } from '@/types';
 
 /* ── Constants ──────────────────────────────────────────────────── */
 
@@ -33,19 +35,6 @@ const LANGUAGES = [
   { value: 'rust',       label: 'Rust'        },
 ];
 
-interface AIModel {
-  id: string;
-  label: string;
-  provider: string;
-}
-
-const AI_MODELS: AIModel[] = [
-  { id: 'claude-3-5-sonnet', label: 'Claude 3.5 Sonnet', provider: 'Anthropic' },
-  { id: 'gpt-4o',            label: 'GPT-4o',            provider: 'OpenAI'    },
-  { id: 'gemini-1-5-pro',    label: 'Gemini 1.5 Pro',    provider: 'Google'    },
-  { id: 'llama-3-70b',       label: 'Llama 3.1 70B',     provider: 'Meta'      },
-];
-
 /* ── Chat types ─────────────────────────────────────────────────── */
 
 interface ChatMessage {
@@ -62,8 +51,6 @@ function initialBotMessage(title: string): ChatMessage {
   };
 }
 
-const BOT_REPLY =
-  'Esta función se conectará al backend pronto. Por ahora, intenta desglosar el problema en pasos más pequeños y empieza por los casos base.';
 
 /* ── Component ──────────────────────────────────────────────────── */
 
@@ -92,11 +79,6 @@ export default function SolvePage() {
   const [messages,     setMessages]     = useState<ChatMessage[]>([]);
   const [chatInput,    setChatInput]    = useState('');
   const [isBotTyping,  setIsBotTyping]  = useState(false);
-
-  /* model dropdown */
-  const [modelOpen,    setModelOpen]    = useState(false);
-  const [selectedModel, setSelectedModel] = useState(AI_MODELS[0]);
-  const modelDropdownRef = useRef<HTMLDivElement>(null);
 
   /* refs for scroll sync */
   const codeRef        = useRef<HTMLTextAreaElement>(null);
@@ -128,17 +110,6 @@ export default function SolvePage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isBotTyping]);
-
-  /* close model dropdown on outside click */
-  useEffect(() => {
-    function onOutsideClick(e: MouseEvent) {
-      if (modelDropdownRef.current && !modelDropdownRef.current.contains(e.target as Node)) {
-        setModelOpen(false);
-      }
-    }
-    if (modelOpen) document.addEventListener('mousedown', onOutsideClick);
-    return () => document.removeEventListener('mousedown', onOutsideClick);
-  }, [modelOpen]);
 
   /* sync line numbers + syntax highlight with textarea scroll */
   const syncEditorScroll = useCallback(() => {
@@ -187,21 +158,70 @@ export default function SolvePage() {
     }
   }, [challenge, code, isSubmitting, showToast, navigate]);
 
-  /* chat send */
-  const handleSend = useCallback(() => {
-    const text = chatInput.trim();
-    if (!text || isBotTyping) return;
-    setMessages((prev) => [...prev, { id: `u-${Date.now()}`, role: 'user', content: text }]);
-    setChatInput('');
+  /* chat send — displayText aparece en el chat, apiText se envía al modelo */
+  const sendToChat = useCallback(async (displayText: string, apiText: string) => {
+    if (isBotTyping) return;
+
+    const userMessage: ChatMessage = { id: `u-${Date.now()}`, role: 'user', content: displayText };
+    const apiMessages = [
+      ...messages,
+      { ...userMessage, content: apiText },
+    ];
+    setMessages((prev) => [...prev, userMessage]);
     setIsBotTyping(true);
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { id: `b-${Date.now()}`, role: 'bot', content: BOT_REPLY },
-      ]);
+
+    const botId = `b-${Date.now()}`;
+
+    try {
+      const session = getJSON<AuthSession>(STORAGE_KEYS.USER);
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (session?.token) headers['Authorization'] = `Bearer ${session.token}`;
+
+      const res = await fetch('/api/chatbot/', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          messages: apiMessages.map((m) => ({
+            role: m.role === 'bot' ? 'assistant' : 'user',
+            content: m.content,
+          })),
+        }),
+      });
+
+      if (!res.ok || !res.body) throw new Error('Error al contactar el asistente');
+
       setIsBotTyping(false);
-    }, 1200);
-  }, [chatInput, isBotTyping]);
+      setMessages((prev) => [...prev, { id: botId, role: 'bot', content: '' }]);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        setMessages((prev) =>
+          prev.map((m) => (m.id === botId ? { ...m, content: m.content + chunk } : m)),
+        );
+      }
+    } catch {
+      setIsBotTyping(false);
+      showToast('Error al conectar con el asistente', 'error');
+    }
+  }, [isBotTyping, messages, showToast]);
+
+  const handleSend = useCallback(async () => {
+    const text = chatInput.trim();
+    if (!text) return;
+    setChatInput('');
+    await sendToChat(text, text);
+  }, [chatInput, sendToChat]);
+
+  const handleAnalyze = useCallback(async () => {
+    if (!code.trim()) return;
+    const apiText = `Analiza mi solución y guíame con el método socrático:\n\`\`\`${language}\n${code}\n\`\`\``;
+    await sendToChat('Analiza mi solución', apiText);
+  }, [code, language, sendToChat]);
 
   const handleChatKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -380,19 +400,29 @@ export default function SolvePage() {
                 </div>
               </div>
 
-              {/* Footer: submit */}
+              {/* Footer: analyze + submit */}
               <div className="shrink-0 flex items-center justify-between px-4 py-2.5 border-t border-zinc-200 dark:border-dark-600 bg-white dark:bg-dark-800">
                 <span className="text-xs text-zinc-400">
                   {lineCount} {lineCount === 1 ? 'línea' : 'líneas'}
                 </span>
-                <button
-                  onClick={handleSubmit}
-                  disabled={isSubmitting || !code.trim()}
-                  className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? <Spinner size={14} /> : <SendHorizonal size={14} />}
-                  {isSubmitting ? 'Enviando…' : 'Entregar solución'}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleAnalyze}
+                    disabled={isBotTyping || !code.trim()}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-primary-500 border border-primary-500 hover:bg-primary-500/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <Sparkles size={14} />
+                    Analiza mi solución
+                  </button>
+                  <button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting || !code.trim()}
+                    className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? <Spinner size={14} /> : <SendHorizonal size={14} />}
+                    {isSubmitting ? 'Enviando…' : 'Entregar solución'}
+                  </button>
+                </div>
               </div>
             </>
           )}
@@ -402,74 +432,15 @@ export default function SolvePage() {
         <div className="flex flex-col w-1/2 bg-white dark:bg-dark-800">
 
           {/* Chat header */}
-          <div className="shrink-0 flex items-center justify-between gap-2 px-4 py-2 bg-zinc-100 dark:bg-dark-700 border-b border-zinc-200 dark:border-dark-600">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-full bg-gradient-primary flex items-center justify-center shrink-0">
-                <Bot size={14} className="text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-zinc-800 dark:text-white leading-tight">
-                  Asistente ComplexityLab
-                </p>
-                <p className="text-xs text-emerald-500 leading-tight">En línea</p>
-              </div>
+          <div className="shrink-0 flex items-center gap-2.5 px-4 py-2 bg-zinc-100 dark:bg-dark-700 border-b border-zinc-200 dark:border-dark-600">
+            <div className="w-7 h-7 rounded-full bg-gradient-primary flex items-center justify-center shrink-0">
+              <Bot size={14} className="text-white" />
             </div>
-
-            {/* Model dropdown */}
-            <div ref={modelDropdownRef} className="relative">
-              <button
-                onClick={() => setModelOpen((o) => !o)}
-                className={cn(
-                  'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors',
-                  'bg-zinc-200 dark:bg-dark-600 text-zinc-600 dark:text-zinc-300',
-                  'hover:bg-zinc-300 dark:hover:bg-dark-500',
-                  modelOpen && 'ring-1 ring-primary-500',
-                )}
-              >
-                <span className="max-w-[120px] truncate">{selectedModel.label}</span>
-                <ChevronDown
-                  size={12}
-                  className={cn('transition-transform duration-200', modelOpen && 'rotate-180')}
-                />
-              </button>
-
-              {modelOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-56 rounded-xl border border-zinc-200 dark:border-dark-500 bg-white dark:bg-dark-800 shadow-lg z-20 overflow-hidden">
-                  <div className="px-3 py-2 border-b border-zinc-100 dark:border-dark-600">
-                    <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
-                      Modelo de IA
-                    </p>
-                  </div>
-                  {AI_MODELS.map((model) => (
-                    <button
-                      key={model.id}
-                      onClick={() => { setSelectedModel(model); setModelOpen(false); }}
-                      className={cn(
-                        'w-full flex items-center justify-between px-3 py-2.5 text-left transition-colors',
-                        'hover:bg-zinc-50 dark:hover:bg-dark-700',
-                        selectedModel.id === model.id
-                          ? 'bg-primary-50 dark:bg-primary-900/20'
-                          : '',
-                      )}
-                    >
-                      <div>
-                        <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                          {model.label}
-                        </p>
-                        <p className="text-xs text-zinc-400">{model.provider}</p>
-                      </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-dark-600 text-zinc-400">
-                          Próximamente
-                        </span>
-                        {selectedModel.id === model.id && (
-                          <Check size={14} className="text-primary-500" />
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
+            <div>
+              <p className="text-sm font-semibold text-zinc-800 dark:text-white leading-tight">
+                Complex
+              </p>
+              <p className="text-xs text-emerald-500 leading-tight">En línea</p>
             </div>
           </div>
 
@@ -487,13 +458,17 @@ export default function SolvePage() {
                 )}
                 <div
                   className={cn(
-                    'max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed',
+                    'max-w-[80%] rounded-2xl px-4 py-2.5 text-sm',
                     msg.role === 'bot'
                       ? 'bg-zinc-100 dark:bg-dark-700 text-zinc-800 dark:text-zinc-200 rounded-tl-sm'
-                      : 'bg-primary-500 text-white rounded-tr-sm',
+                      : 'bg-primary-500 text-white rounded-tr-sm leading-relaxed',
                   )}
                 >
-                  {msg.content}
+                  {msg.role === 'bot' ? (
+                    <ChatMarkdown content={msg.content} isDark={isDark} />
+                  ) : (
+                    msg.content
+                  )}
                 </div>
               </div>
             ))}

@@ -2,7 +2,7 @@
 from fastapi import APIRouter, FastAPI
 from fastapi.responses import RedirectResponse
 
-from routers import auth_router, challenges_router, submissions_router, users_router
+from routers import auth_router, challenges_router, chatbot_router, submissions_router, users_router
 
 app = FastAPI(
     title="ComplexityLab Backend",
@@ -28,5 +28,6 @@ api_router.include_router(auth_router)
 api_router.include_router(users_router)
 api_router.include_router(challenges_router)
 api_router.include_router(submissions_router)
+api_router.include_router(chatbot_router)
 
 app.include_router(api_router)
