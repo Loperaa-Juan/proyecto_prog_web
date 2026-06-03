@@ -99,7 +99,7 @@ graph TB
     API -->|Respuestas HTTP (JSON)| Browser
 ```
 
-> 📖 Para una descripción completa de la arquitectura, decisiones de diseño, compromisos técnicos (trade-offs) y diagramas detallados (Capas, Despliegue, Carpetas), consulte el documento de arquitectura en [docs/arquitectura.md](file:///c:/wamp64/www/proyecto_prog_web/docs/arquitectura.md).
+> 📖 Para una descripción completa de la arquitectura, decisiones de diseño, compromisos técnicos (trade-offs) y diagramas detallados (Capas, Despliegue, Carpetas), consulte el documento de arquitectura en [docs/arquitectura.md](./docs/arquitectura.md).
 
 ---
 
