@@ -82,7 +82,7 @@ El Backend implementa un patrón de **Arquitectura en Capas (N-Layer)**:
 graph TB
     User["Usuario<br/>(Estudiante / Docente)"] -->|Usa UI| Browser["Navegador Web<br/>(React SPA)"]
     
-    subgraph ServidorBackend["Backend de ComplejidadLab"]
+    subgraph ServidorBackend["Backend de ComplexityLab"]
         API["REST API Server<br/>(FastAPI / Python)"]
         DB[("Base de Datos<br/>(PostgreSQL / SQLite)")]
     end
