@@ -99,7 +99,7 @@ graph TB
     API -->|Respuestas HTTP (JSON)| Browser
 ```
 
-> 📖 Para una descripción completa de la arquitectura, decisiones de diseño, compromisos técnicos (trade-offs) y diagramas detallados (Capas, Despliegue, Carpetas), consulte el documento de arquitectura en [docs/arquitectura.md](file:///c:/wamp64/www/proyecto_prog_web/docs/arquitectura.md).
+> 📖 Para una descripción completa de la arquitectura, decisiones de diseño, compromisos técnicos (trade-offs) y diagramas detallados (Capas, Despliegue, Carpetas), consulte el documento de arquitectura en [docs/arquitectura.md](../docs/arquitectura.md).
 
 ---
 
@@ -111,12 +111,12 @@ Siga los siguientes pasos para ejecutar y probar las dos partes que integran la 
 Actualmente, el repositorio cuenta con un prototipo visual responsivo en la carpeta `landing_page/`.
 
 * **Ejecución Directa:**
-  No requiere compilación preliminar. Simplemente abra el archivo [index.html](file:///c:/wamp64/www/proyecto_prog_web/landing_page/index.html) en cualquier navegador web moderno, o inícielo a través de una extensión de servidor local como *Live Server* en VSCode o usando su instalación local de *WampServer*.
+  No requiere compilación preliminar. Simplemente abra el archivo [index.html](../landing_page/index.html) en cualquier navegador web moderno, o inícielo a través de una extensión de servidor local como *Live Server* en VSCode o usando su instalación local de *WampServer*.
 
 * **Estructura del Prototipo:**
-  * [Página de Inicio (Landing Page)](file:///c:/wamp64/www/proyecto_prog_web/landing_page/index.html)
-  * [Autenticación (Login / Registro)](file:///c:/wamp64/www/proyecto_prog_web/landing_page/login.html)
-  * [Catálogo de Desafíos](file:///c:/wamp64/www/proyecto_prog_web/landing_page/challenges.html)
+  * [Página de Inicio (Landing Page)](../landing_page/index.html)
+  * [Autenticación (Login / Registro)](../landing_page/login.html)
+  * [Catálogo de Desafíos](../landing_page/challenges.html)
 
 ---
 
@@ -185,11 +185,11 @@ A continuación se muestran los diagramas que ilustran la estructura física y l
 
 ### 1. Diagrama de Estructura de Proyecto
 Mapeo inicial de los componentes del sistema:
-![Diagrama de Estructura](file:///c:/wamp64/www/proyecto_prog_web/Diagrama-Estructura-Proyecto.drawio.png)
+![Diagrama de Estructura](../Diagrama-Estructura-Proyecto.drawio.png)
 
 ### 2. Esquema Relacional de Base de Datos
 Representación gráfica de las tablas, atributos y llaves foráneas definidas para persistencia:
-![Esquema de BD](file:///c:/wamp64/www/proyecto_prog_web/Images/RepresentaciónGráficaEsquemaDBComplexityLab.png)
+![Esquema de BD](../Images/RepresentaciónGráficaEsquemaDBComplexityLab.png)
 
 ### 3. Diagrama de Arquitectura y Contenedores (D04)
 ![Diagrama de Arquitectura y Contenedores](Images/D04_arquitectura.png)
@@ -207,9 +207,9 @@ Representación gráfica de las tablas, atributos y llaves foráneas definidas p
 
 ## 📂 DOCUMENTACIÓN ADICIONAL
 
-Para profundizar en el análisis funcional e informático de ComplexityLab, explore la carpeta [docs/](file:///c:/wamp64/www/proyecto_prog_web/docs/):
-* **Análisis del Negocio y Sistema:** [`docs/analisis.md`](file:///c:/wamp64/www/proyecto_prog_web/docs/analisis.md) — Describe quién usa el sistema, qué necesita hacer, qué datos maneja y qué restricciones existen (Las 4 preguntas de diseño).
-* **Arquitectura de Software y Sistemas:** [`docs/arquitectura.md`](file:///c:/wamp64/www/proyecto_prog_web/docs/arquitectura.md) — Describe el estilo, capas, flujo de datos detallado, justificación del stack, trade-offs y los diagramas C4 de contenedores, componentes y despliegue del sistema.
+Para profundizar en el análisis funcional e informático de ComplexityLab, explore la carpeta [docs/](../docs/):
+* **Análisis del Negocio y Sistema:** [`docs/analisis.md`](../docs/analisis.md) — Describe quién usa el sistema, qué necesita hacer, qué datos maneja y qué restricciones existen (Las 4 preguntas de diseño).
+* **Arquitectura de Software y Sistemas:** [`docs/arquitectura.md`](../docs/arquitectura.md) — Describe el estilo, capas, flujo de datos detallado, justificación del stack, trade-offs y los diagramas C4 de contenedores, componentes y despliegue del sistema.
 
 ---
 
