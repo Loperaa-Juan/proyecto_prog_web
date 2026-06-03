@@ -120,7 +120,8 @@ Actualmente, el repositorio cuenta con un prototipo visual responsivo en la carp
 
 ---
 
-### 2. Backend (Servidor FastAPI Planificado)
+### 2. Backend (Servidor FastAPI — planificado)
+> Nota: actualmente este repositorio no incluye la carpeta `backend/`. Los siguientes pasos aplican cuando se agregue la implementación del servidor.
 La estructura del backend se sitúa en la carpeta `backend/`. Siga estos pasos para configurar el entorno:
 
 1. **Navegar al directorio del backend:**
