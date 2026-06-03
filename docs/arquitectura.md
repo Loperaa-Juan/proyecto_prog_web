@@ -285,7 +285,7 @@ proyecto_prog_web/                   # Raíz del repositorio de ComplexityLab
 │   ├── auth.css                     # Estilos dedicados de la interfaz de login/registro
 │   └── challenges.css               # Estilos dedicados de la interfaz de catálogo de retos
 │
-└── backend/                         # Estructura del Backend (FastAPI - Implementación Planificada)
+└── backend/                         # Estructura del Backend (FastAPI — Implementación planificada; aún no incluida en el repositorio)
     ├── main.py                      # Punto de entrada de la aplicación FastAPI y registro de routers
     ├── requirements.txt             # Dependencias del backend (FastAPI, SQLAlchemy, Pydantic, Uvicorn)
     │
