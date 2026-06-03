@@ -82,7 +82,7 @@ El Backend implementa un patrón de **Arquitectura en Capas (N-Layer)**:
 graph TB
     User["Usuario<br/>(Estudiante / Docente)"] -->|Usa UI| Browser["Navegador Web<br/>(React SPA)"]
     
-    subgraph ServidorBackend["Backend de ComplejidadLab"]
+    subgraph ServidorBackend["Backend de ComplexityLab"]
         API["REST API Server<br/>(FastAPI / Python)"]
         DB[("Base de Datos<br/>(PostgreSQL / SQLite)")]
     end
@@ -99,7 +99,7 @@ graph TB
     API -->|Respuestas HTTP (JSON)| Browser
 ```
 
-> 📖 Para una descripción completa de la arquitectura, decisiones de diseño, compromisos técnicos (trade-offs) y diagramas detallados (Capas, Despliegue, Carpetas), consulte el documento de arquitectura en [docs/arquitectura.md](file:///c:/wamp64/www/proyecto_prog_web/docs/arquitectura.md).
+> 📖 Para una descripción completa de la arquitectura, decisiones de diseño, compromisos técnicos (trade-offs) y diagramas detallados (Capas, Despliegue, Carpetas), consulte el documento de arquitectura en [docs/arquitectura.md](./docs/arquitectura.md).
 
 ---
 
@@ -207,9 +207,9 @@ Representación gráfica de las tablas, atributos y llaves foráneas definidas p
 
 ## 📂 DOCUMENTACIÓN ADICIONAL
 
-Para profundizar en el análisis funcional e informático de ComplexityLab, explore la carpeta [docs/](file:///c:/wamp64/www/proyecto_prog_web/docs/):
-* **Análisis del Negocio y Sistema:** [`docs/analisis.md`](file:///c:/wamp64/www/proyecto_prog_web/docs/analisis.md) — Describe quién usa el sistema, qué necesita hacer, qué datos maneja y qué restricciones existen (Las 4 preguntas de diseño).
-* **Arquitectura de Software y Sistemas:** [`docs/arquitectura.md`](file:///c:/wamp64/www/proyecto_prog_web/docs/arquitectura.md) — Describe el estilo, capas, flujo de datos detallado, justificación del stack, trade-offs y los diagramas C4 de contenedores, componentes y despliegue del sistema.
+Para profundizar en el análisis funcional e informático de ComplexityLab, explore la carpeta [docs/](./docs/):
+* **Análisis del Negocio y Sistema:** [`docs/analisis.md`](./docs/analisis.md) — Describe quién usa el sistema, qué necesita hacer, qué datos maneja y qué restricciones existen (Las 4 preguntas de diseño).
+* **Arquitectura de Software y Sistemas:** [`docs/arquitectura.md`](./docs/arquitectura.md) — Describe el estilo, capas, flujo de datos detallado, justificación del stack, trade-offs y los diagramas C4 de contenedores, componentes y despliegue del sistema.
 
 ---
 
