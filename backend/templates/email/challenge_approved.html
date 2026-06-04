@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>¡Tu solución fue aprobada!</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #0f1117;
+        color: #e2e8f0;
+      }
+      .wrapper {
+        max-width: 600px;
+        margin: 40px auto;
+      }
+      .header {
+        background: linear-gradient(135deg, #0d1f17 0%, #0a1a12 100%);
+        border-radius: 16px 16px 0 0;
+        padding: 40px 48px 32px;
+        border-bottom: 1px solid #1a3d2a;
+        text-align: center;
+      }
+      .logo {
+        font-size: 22px;
+        font-weight: 700;
+        color: #818cf8;
+        letter-spacing: -0.5px;
+        margin-bottom: 24px;
+      }
+      .badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #14532d, #166534);
+        color: #86efac;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 6px 16px;
+        border-radius: 100px;
+        margin-bottom: 20px;
+      }
+      .icon {
+        font-size: 56px;
+        margin-bottom: 16px;
+      }
+      .header h1 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #f1f5f9;
+        line-height: 1.3;
+      }
+      .header h1 span {
+        color: #4ade80;
+      }
+      .body {
+        background: #1a1d2e;
+        padding: 40px 48px;
+      }
+      .greeting {
+        font-size: 16px;
+        color: #94a3b8;
+        margin-bottom: 24px;
+        line-height: 1.6;
+      }
+      .card {
+        background: #12141f;
+        border: 1px solid #1a3d2a;
+        border-radius: 12px;
+        padding: 24px 28px;
+        margin: 24px 0;
+      }
+      .card-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #4ade80;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+      }
+      .card-value {
+        font-size: 18px;
+        font-weight: 600;
+        color: #f1f5f9;
+      }
+      .card-sub {
+        font-size: 13px;
+        color: #64748b;
+        margin-top: 4px;
+      }
+      .stats {
+        display: flex;
+        gap: 12px;
+        margin: 24px 0;
+      }
+      .stat {
+        flex: 1;
+        background: #12141f;
+        border: 1px solid #1a3d2a;
+        border-radius: 10px;
+        padding: 16px;
+        text-align: center;
+      }
+      .stat-value {
+        font-size: 28px;
+        margin-bottom: 4px;
+      }
+      .stat-label {
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 500;
+      }
+      .divider {
+        border: none;
+        border-top: 1px solid #2d3155;
+        margin: 28px 0;
+      }
+      .message {
+        font-size: 15px;
+        color: #94a3b8;
+        line-height: 1.7;
+      }
+      .highlight {
+        color: #a5b4fc;
+        font-weight: 600;
+      }
+      .success-banner {
+        background: linear-gradient(135deg, #052e16, #14532d);
+        border: 1px solid #166534;
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-top: 24px;
+        text-align: center;
+      }
+      .success-banner p {
+        font-size: 15px;
+        color: #bbf7d0;
+        line-height: 1.6;
+        font-weight: 500;
+      }
+      .footer {
+        background: #141626;
+        border-radius: 0 0 16px 16px;
+        padding: 24px 48px;
+        border-top: 1px solid #2d3155;
+        text-align: center;
+      }
+      .footer p {
+        font-size: 12px;
+        color: #475569;
+        line-height: 1.6;
+      }
+      .footer a {
+        color: #6366f1;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="header">
+        <div class="logo">ComplexityLab</div>
+        <div class="badge">Solución Aprobada</div>
+        <div class="icon">✅</div>
+        <h1>¡Tu solución fue <span>aprobada</span>!</h1>
+      </div>
+
+      <div class="body">
+        <p class="greeting">
+          ¡Felicitaciones,
+          <strong style="color: #f1f5f9">{{ user_name }}</strong>! El creador
+          del challenge ha revisado tu solución y decidió aprobarla. Tu
+          esfuerzo y dedicación han dado sus frutos.
+        </p>
+
+        <div class="card">
+          <div class="card-label">Challenge completado</div>
+          <div class="card-value">{{ challenge_title }}</div>
+          <div class="card-sub">
+            Aprobado por
+            <strong style="color: #4ade80">{{ reviewer_name }}</strong>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-value">🎯</div>
+            <div class="stat-label">Solución correcta</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">⭐</div>
+            <div class="stat-label">Challenge superado</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">🚀</div>
+            <div class="stat-label">Sigue creciendo</div>
+          </div>
+        </div>
+
+        <hr class="divider" />
+
+        <p class="message">
+          Has demostrado tu habilidad para resolver problemas de algoritmia y
+          estructuras de datos en
+          <span class="highlight">ComplexityLab</span>. Este logro queda
+          registrado en tu perfil y contribuye a tu reputación dentro de la
+          comunidad.<br /><br />
+          Te invitamos a seguir explorando nuevos challenges y a seguir
+          perfeccionando tus habilidades como desarrollador.
+        </p>
+
+        <div class="success-banner">
+          <p>
+            ¡Sigue así! Cada challenge resuelto te acerca más a la excelencia
+            en algoritmia.
+          </p>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>
+          Este correo fue enviado automáticamente por
+          <a href="#">ComplexityLab</a>.<br />
+          Si no esperabas este mensaje, puedes ignorarlo sin problema.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

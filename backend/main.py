@@ -1,13 +1,23 @@
-# from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+
 from fastapi import APIRouter, FastAPI
 from fastapi.responses import RedirectResponse
 
-from routers import auth_router, challenges_router, chatbot_router, submissions_router, users_router
+import services.email as _emailServices
+from routers import auth_router, challenges_router, chatbot_router, email_router, submissions_router, users_router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    _emailServices.init_email_service()
+    yield
+
 
 app = FastAPI(
     title="ComplexityLab Backend",
     description="Backend API para ComplexityLab, una plataforma de aprendizaje de algoritmos y estructuras de datos.",
     version="0.1.0",
+    lifespan=lifespan,
 )
 
 
@@ -29,5 +39,6 @@ api_router.include_router(users_router)
 api_router.include_router(challenges_router)
 api_router.include_router(submissions_router)
 api_router.include_router(chatbot_router)
+api_router.include_router(email_router)
 
 app.include_router(api_router)

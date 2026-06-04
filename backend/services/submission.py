@@ -1,11 +1,16 @@
+import logging
 from typing import Optional
 
 import sqlalchemy.orm as _orm
 from fastapi import HTTPException
 
+import services.email as _emailServices
 from models.challenge import Challenge
 from models.submission import Submission
+from models.user import User as _UserModel
 from schemas.user import User
+
+_log = logging.getLogger(__name__)
 
 
 async def create_submission(
@@ -23,6 +28,22 @@ async def create_submission(
     db.add(submission_obj)
     db.commit()
     db.refresh(submission_obj)
+
+    try:
+        if _emailServices.email_service:
+            challenge = db.query(Challenge).filter(Challenge.Challengeid == challenge_id).first()
+            if challenge:
+                creator = db.query(_UserModel).filter(_UserModel.Userid == challenge.Userid).first()
+                if creator and str(creator.Userid) != str(user.Userid):
+                    _emailServices.email_service.send_challenge_solved(
+                        destinatario=creator.email,
+                        user_name=creator.full_name,
+                        challenge_title=challenge.title,
+                        solver_name=user.full_name,
+                    )
+    except Exception as exc:
+        _log.warning("Email notification failed on create_submission: %s", exc)
+
     return submission_obj
 
 
@@ -92,6 +113,30 @@ async def update_submission_status(
     submission.status = status
     db.commit()
     db.refresh(submission)
+
+    try:
+        if _emailServices.email_service and status in ("accepted", "rejected"):
+            submitter = (
+                db.query(_UserModel).filter(_UserModel.Userid == submission.user_id).first()
+            )
+            if submitter:
+                if status == "accepted":
+                    _emailServices.email_service.send_challenge_approved(
+                        destinatario=submitter.email,
+                        user_name=submitter.full_name,
+                        challenge_title=challenge.title,
+                        reviewer_name=user.full_name,
+                    )
+                else:
+                    _emailServices.email_service.send_challenge_rejected(
+                        destinatario=submitter.email,
+                        user_name=submitter.full_name,
+                        challenge_title=challenge.title,
+                        reviewer_name=user.full_name,
+                    )
+    except Exception as exc:
+        _log.warning("Email notification failed on update_submission_status: %s", exc)
+
     return {"Submissionid": str(submission.Submissionid), "status": submission.status}
 
 

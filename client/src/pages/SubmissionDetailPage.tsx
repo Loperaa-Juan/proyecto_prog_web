@@ -29,6 +29,8 @@ export default function SubmissionDetailPage() {
   const [status, setStatus] = useState<SolutionStatus>(state?.submission.status ?? 'pending');
   const [accepting, setAccepting] = useState(false);
   const [rejecting, setRejecting] = useState(false);
+  const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
 
   useDocumentTitle('Detalle de submission');
 
@@ -55,7 +57,7 @@ export default function SubmissionDetailPage() {
     try {
       await submissionService.accept(submission.id);
       setStatus('approved');
-      showToast('Submission aceptada', 'success');
+      showToast('Submission aceptada. Se notificó al autor por correo.', 'success');
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'Error al aceptar', 'error');
     } finally {
@@ -63,13 +65,20 @@ export default function SubmissionDetailPage() {
     }
   };
 
-  const handleReject = async () => {
+  const openRejectDialog = () => {
     if (accepting || rejecting) return;
+    setRejectReason('');
+    setShowRejectDialog(true);
+  };
+
+  const handleReject = async () => {
+    if (accepting || rejecting || !rejectReason.trim()) return;
+    setShowRejectDialog(false);
     setRejecting(true);
     try {
-      await submissionService.reject(submission.id);
+      await submissionService.reject(submission.id, rejectReason.trim());
       setStatus('rejected');
-      showToast('Submission denegada', 'success');
+      showToast('Submission rechazada. Se notificó al autor por correo.', 'success');
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'Error al denegar', 'error');
     } finally {
@@ -153,7 +162,7 @@ export default function SubmissionDetailPage() {
 
           <div className="flex items-center gap-3">
             <button
-              onClick={handleReject}
+              onClick={openRejectDialog}
               disabled={busy || status === 'rejected'}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-rose-300 dark:border-rose-500/50 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
@@ -171,6 +180,56 @@ export default function SubmissionDetailPage() {
           </div>
         </div>
       </div>
+      {/* Reject reason dialog */}
+      {showRejectDialog && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowRejectDialog(false); }}
+        >
+          <div className="w-full max-w-md bg-white dark:bg-dark-800 rounded-2xl shadow-xl border border-zinc-200 dark:border-dark-600 overflow-hidden">
+            <div className="px-6 py-4 border-b border-zinc-100 dark:border-dark-600 flex items-center justify-between">
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
+                Razón del rechazo
+              </h3>
+              <button
+                onClick={() => setShowRejectDialog(false)}
+                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="px-6 py-4">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-3">
+                Explica al autor por qué su solución está siendo rechazada. Este mensaje le será enviado por correo.
+              </p>
+              <textarea
+                autoFocus
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                placeholder="Ej: El algoritmo no cumple con la complejidad requerida…"
+                rows={4}
+                className="w-full resize-none rounded-xl border border-zinc-200 dark:border-dark-500 bg-zinc-50 dark:bg-dark-700 px-3 py-2.5 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 outline-none focus:border-rose-400 dark:focus:border-rose-500 transition-colors"
+              />
+            </div>
+            <div className="px-6 py-3 border-t border-zinc-100 dark:border-dark-600 flex justify-end gap-3">
+              <button
+                onClick={() => setShowRejectDialog(false)}
+                className="px-4 py-2 rounded-xl text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-dark-700 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleReject}
+                disabled={!rejectReason.trim()}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-rose-500 hover:bg-rose-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <X size={15} />
+                Confirmar rechazo
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

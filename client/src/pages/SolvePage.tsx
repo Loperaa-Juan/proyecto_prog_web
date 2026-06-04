@@ -149,7 +149,7 @@ export default function SolvePage() {
     setIsSubmitting(true);
     try {
       await submissionService.create(challenge.id, code);
-      showToast('Solución enviada correctamente', 'success');
+      showToast('Solución enviada. El creador del challenge recibirá una notificación por correo.', 'success');
       navigate('/challenges');
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'Error al enviar la solución', 'error');

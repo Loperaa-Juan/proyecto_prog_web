@@ -33,7 +33,7 @@ export async function create(challengeId: string, code: string): Promise<Solutio
   const form = new FormData();
   form.append('challenge_id', challengeId);
   form.append('code', code);
-  const data = await http.postForm<BackendSubmission>('/submissions', form);
+  const data = await http.postForm<BackendSubmission>('/submissions/', form);
   return mapBackendSubmission(data);
 }
 
@@ -72,6 +72,6 @@ export async function accept(submissionId: string): Promise<void> {
   await http.post<void>(`/submissions/${submissionId}/accept`, {});
 }
 
-export async function reject(submissionId: string): Promise<void> {
-  await http.post<void>(`/submissions/${submissionId}/reject`, {});
+export async function reject(submissionId: string, reason: string): Promise<void> {
+  await http.post<void>(`/submissions/${submissionId}/reject`, { reason });
 }
