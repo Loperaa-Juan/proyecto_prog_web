@@ -4,11 +4,13 @@ from fastapi import APIRouter, FastAPI
 from fastapi.responses import RedirectResponse
 
 import services.email as _emailServices
+from services import database as _databaseServices
 from routers import auth_router, challenges_router, chatbot_router, email_router, submissions_router, users_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    _databaseServices.create_database()
     _emailServices.init_email_service()
     yield
 
