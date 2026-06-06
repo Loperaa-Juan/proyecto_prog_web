@@ -18,7 +18,7 @@ const STATUS_CONFIG: Record<SolutionStatus, { dot: string; text: string; label: 
 };
 
 export default function SubmissionDetailPage() {
-  const { id: challengeId, submissionId } = useParams<{ id: string; submissionId: string }>();
+  const { id: challengeId } = useParams<{ id: string; submissionId: string }>();
   const { state } = useLocation() as {
     state: { submission: Solution; challengeTitle: string } | null;
   };

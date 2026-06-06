@@ -3,7 +3,7 @@
  * Importa desde aquí para acceder a cualquier tipo: `import type { Challenge } from '@/types'`
  */
 export type { ApiEnvelope, ApiError, Paginated } from './api';
-export type { User, AuthCredentials, RegisterPayload, AuthSession } from './user';
+export type { User, AuthCredentials, RegisterPayload, AuthSession, UpdateUserPayload } from './user';
 export type {
   Challenge,
   ChallengeDifficulty,

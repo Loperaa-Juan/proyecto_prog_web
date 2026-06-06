@@ -210,7 +210,7 @@ export default function DashboardPage() {
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
         {/* ===== ESTADÍSTICAS ===== */}
         {stats && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <StatCard icon={<Code2 size={22} />} label="Creados"       value={myChallenges.length}  color="primary" />
             <StatCard icon={<Trophy size={22} />} label="Enviadas"      value={mySubmissions.length} color="accent"  />
             <StatCard icon={<Flame size={22} />}  label="Días seguidos" value={stats.currentStreak}  color="violet"  />
